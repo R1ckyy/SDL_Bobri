@@ -1,7 +1,7 @@
-#include <stdbool.h>
+#pragma once
 
-#ifndef SCREENMGR_H
-#define SCREENMGR_H
+#include <SDL2/SDL.h>
+#include <stdbool.h>
 
 enum Screens {
     MENU,
@@ -29,6 +29,4 @@ void setActiveScreen(enum Screens);
 
 enum Screens getActiveScreen();
 
-void renderActiveScreen();
-
-#endif
+void renderActiveScreen(SDL_Renderer *renderer);

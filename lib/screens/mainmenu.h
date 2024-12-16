@@ -1,6 +1,9 @@
-#ifndef MAINMENU_H
-#define MAINMENU_H
+#pragma once
 
-void render_MainMenu();
+#include <SDL2/SDL.h>
 
-#endif
+void init_MainMenu();
+
+void render_MainMenu(SDL_Renderer *renderer);
+
+void kill_MainMenu();
