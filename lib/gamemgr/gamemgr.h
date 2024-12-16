@@ -30,3 +30,5 @@ void setActiveScreen(enum Screens);
 enum Screens getActiveScreen();
 
 void renderActiveScreen(SDL_Renderer *renderer);
+
+void killGameManager();

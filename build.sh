@@ -4,4 +4,5 @@ mkdir build
 cd build
 cmake ..
 make
-./sdlgame
+cd ..
+./build/sdlgame

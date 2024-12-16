@@ -25,8 +25,8 @@ int main(int argc, char *argv[]) {
         "Bobri (Bulanci)", 
         SDL_WINDOWPOS_CENTERED, 
         SDL_WINDOWPOS_CENTERED, 
-        1280, 
-        720, 
+        1400, 
+        800, 
         SDL_WINDOW_SHOWN   
     );
 
@@ -72,6 +72,7 @@ int main(int argc, char *argv[]) {
         SDL_RenderPresent(renderer);
     }
 
+    killGameManager();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     TTF_Quit();

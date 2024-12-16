@@ -19,7 +19,21 @@ bool isDebug() {
 };
 
 void setActiveScreen(enum Screens screen) {
+    switch (gamemgr.currentScreen) {
+    case MENU:
+        kill_MainMenu();
+        break;
+    default:
+        break;
+    }
     gamemgr.currentScreen = screen;
+    switch (gamemgr.currentScreen) {
+    case MENU:
+        init_MainMenu();
+        break;
+    default:
+        break;
+    }
 };
 
 enum Screens getActiveScreen() {
@@ -30,6 +44,16 @@ void renderActiveScreen(SDL_Renderer *renderer) {
     switch (gamemgr.currentScreen) {
     case MENU:
         render_MainMenu(renderer);
+        break;
+    default:
+        break;
+    }
+};
+
+void killGameManager() {
+    switch (gamemgr.currentScreen) {
+    case MENU:
+        kill_MainMenu();
         break;
     default:
         break;
