@@ -4,4 +4,3 @@
 #include <SDL2/SDL_ttf.h>
 
 void createText(TTF_Font *font, SDL_Renderer *renderer, SDL_Color color, const char *text, int x, int y, int w, int h);
-
