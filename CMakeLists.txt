@@ -3,16 +3,16 @@ project(sdlapp C)
 
 set(CMAKE_C_STANDARD 11)
 
-file(GLOB_RECURSE SOURCES
+file(GLOB_RECURSE CFILES
     main.c
     lib/**/*.c
 )
 
-file(GLOB_RECURSE HEADERS
+file(GLOB_RECURSE HFILES
     lib/**/*.h
 )
 
-add_executable(sdlgame ${SOURCES})
+add_executable(sdlgame ${CFILES})
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
@@ -21,4 +21,4 @@ find_package(SDL2_ttf REQUIRED)
 target_include_directories(sdlgame PRIVATE ${SDL2_INCLUDE_DIRS})
 target_link_libraries(sdlgame SDL2 SDL2_image SDL2_ttf)
 
-target_include_directories(sdlgame PRIVATE HEADERS)
+target_include_directories(sdlgame PRIVATE HFILES)

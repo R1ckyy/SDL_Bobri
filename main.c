@@ -1,19 +1,28 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
-#include "lib/screenmgr/screenmgr.h"
+#include <string.h>
+
+#include "lib/gamemgr/gamemgr.h"
 
 #define DEBUG false
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
+    if(argc > 1){
+        if(strcmp(argv[1], "-debug") == 0) initGameManager(true);
+        else initGameManager(DEBUG);
+    }
+
+    // --- INITIALIZE ---
+
     bool running = true;
+    if(isDebug()) printf("Initializing.\n");
 
     SDL_Init(SDL_INIT_VIDEO);
 
     SDL_Window* window = SDL_CreateWindow(
-        "Bobri", 
-        100, 
-        100, 
+        "Bobri (Bulanci)", 
+        SDL_WINDOWPOS_CENTERED, 
+        SDL_WINDOWPOS_CENTERED, 
         1280, 
         720, 
         SDL_WINDOW_SHOWN   
@@ -27,6 +36,8 @@ int main(int argc, char *argv[])
 
     SDL_Event event;
 
+    // --- ---
+
     while (running) {
 
         while (SDL_PollEvent(&event))
@@ -34,7 +45,12 @@ int main(int argc, char *argv[])
 
             if (event.type == SDL_QUIT) {
                 running = false;
-                if(DEBUG) printf("Quit by player.\n");
+                if(isDebug()) printf("Quit by player.\n");
+            }
+            if (event.type == SDL_MOUSEMOTION) {
+                int x, y;
+                SDL_GetMouseState(&x, &y);
+                if(isDebug()) printf("Mouse: [x:%d,y:%d]\n", x,y);
             }
 
         }
