@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
     // --- ---
 
     while (running) {
+        int x = 0, y = 0;
 
         while (SDL_PollEvent(&event))
         {
@@ -53,7 +54,6 @@ int main(int argc, char *argv[]) {
                 if(isDebug()) printf("Quit by player.\n");
             }
             if (event.type == SDL_MOUSEMOTION) {
-                int x, y;
                 SDL_GetMouseState(&x, &y);
                 if(isDebug()) printf("Mouse: [x:%d,y:%d], ActiveScreen: %d\n", x,y, getActiveScreen());
             }
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
         // Vykresli pozadí
         SDL_RenderClear(renderer);
 
-        renderActiveScreen(renderer);
+        renderActiveScreen(renderer, x, y);
         
         // Zobraz vykreslené prvky na obrazovku
         SDL_RenderPresent(renderer);

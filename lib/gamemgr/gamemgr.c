@@ -40,10 +40,10 @@ enum Screens getActiveScreen() {
     return gamemgr.currentScreen;
 };
 
-void renderActiveScreen(SDL_Renderer *renderer) {
+void renderActiveScreen(SDL_Renderer *renderer, int x, int y) {
     switch (gamemgr.currentScreen) {
     case MENU:
-        render_MainMenu(renderer);
+        render_MainMenu(renderer, x, y);
         break;
     default:
         break;

@@ -7,7 +7,7 @@ enum Screens {
     MENU,
     SETTINGS,
     LEADERBOARD,
-    INGAME
+    GAME
 };
 
 enum PlayerSetting {
@@ -29,6 +29,6 @@ void setActiveScreen(enum Screens);
 
 enum Screens getActiveScreen();
 
-void renderActiveScreen(SDL_Renderer *renderer);
+void renderActiveScreen(SDL_Renderer *renderer, int mouse_x, int mouse_y);
 
 void killGameManager();

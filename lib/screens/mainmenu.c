@@ -12,7 +12,7 @@ void init_MainMenu() {
     mainfont = TTF_OpenFont("fonts/Roboto.ttf", 32);
 };
 
-void render_MainMenu(SDL_Renderer *renderer) {
+void render_MainMenu(SDL_Renderer *renderer, int mouse_x, int mouse_y) {
     SDL_Color white = {255, 255, 255, 255};
 
     createText(titlefont, renderer, white, "Bobranci (Bulanci)", 400, 50, 600, 100);
