@@ -17,11 +17,16 @@ enum PlayerSetting {
 };
 
 typedef struct {
+    bool running;
     bool debug;
     enum Screens currentScreen;
 } GameManager;
 
 void initGameManager(bool debug);
+
+bool isRunning();
+
+void quitGame();
 
 bool isDebug();
 

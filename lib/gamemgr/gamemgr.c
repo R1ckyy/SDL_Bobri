@@ -9,16 +9,26 @@ static GameManager gamemgr;
 
 void initGameManager(bool debug) {
     init_MainMenu();
+    gamemgr.running = true;
     gamemgr.currentScreen = MENU;
     gamemgr.debug = debug;
-    if(gamemgr.debug) printf("---------\nDEBUG MODE\n---------\n");
+    if(gamemgr.debug) printf("-------------------\nDEBUG MODE ACTIVE\n-------------------\n");
 };
+
+bool isRunning() {
+    return gamemgr.running;
+}
+
+void quitGame() {
+    gamemgr.running = false;
+}
 
 bool isDebug() {
     return gamemgr.debug;
 };
 
 void setActiveScreen(enum Screens screen) {
+    if(isDebug()) printf("Switching to screen: %d\n", screen);
     switch (gamemgr.currentScreen) {
     case MENU:
         kill_MainMenu();

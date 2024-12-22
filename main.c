@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "lib/gamemgr/gamemgr.h"
+#include "lib/buttonmgr/buttonmgr.h"
 
 #define DEBUG false
 
@@ -18,7 +19,6 @@ int main(int argc, char *argv[]) {
 
     // --- INITIALIZE ---
 
-    bool running = true;
     if(isDebug()) printf("Initializing.\n");
 
     SDL_Window* window = SDL_CreateWindow(
@@ -43,19 +43,25 @@ int main(int argc, char *argv[]) {
 
     // --- ---
 
-    while (running) {
-        int x = 0, y = 0;
+    while (isRunning()) {
+        static int x = 0, y = 0;
 
         while (SDL_PollEvent(&event))
         {
 
             if (event.type == SDL_QUIT) {
-                running = false;
-                if(isDebug()) printf("Quit by player.\n");
+                quitGame();
+                if(isDebug()) printf("Quit by Term signal.\n");
             }
             if (event.type == SDL_MOUSEMOTION) {
                 SDL_GetMouseState(&x, &y);
                 if(isDebug()) printf("Mouse: [x:%d,y:%d], ActiveScreen: %d\n", x,y, getActiveScreen());
+            }
+            if (event.type == SDL_MOUSEBUTTONDOWN) {
+                if(event.button.button == SDL_BUTTON_LEFT) {
+                    if(isDebug()) printf("Left mouse button pressed at [x:%d,y:%d]\n",x,y);
+                    buttonCheck(x,y);
+                }
             }
 
         }
