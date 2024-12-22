@@ -6,10 +6,12 @@ set(CMAKE_C_STANDARD 11)
 file(GLOB_RECURSE CFILES
     main.c
     lib/**/*.c
+    utils/**/*.c
 )
 
 file(GLOB_RECURSE HFILES
     lib/**/*.h
+    utils/**/*.h
 )
 
 add_executable(sdlgame ${CFILES})

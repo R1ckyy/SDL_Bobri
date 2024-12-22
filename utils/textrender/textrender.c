@@ -2,7 +2,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <string.h>
 
-#include "textmgr.h"
+#include "textrender.h"
 
 void createText(TTF_Font *font, SDL_Renderer *renderer, SDL_Color color, const char *text, int x, int y, int w, int h) {
     SDL_Surface *surface = TTF_RenderText_Blended(font, text, color);
