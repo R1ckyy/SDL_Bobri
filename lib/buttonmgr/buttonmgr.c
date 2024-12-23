@@ -80,8 +80,10 @@ void buttonCheck() {
 };
 
 void cleanButtons() {
-    free(activeButtons);
-    activeButtons = NULL;
+    if(activeButtons != NULL) {
+        free(activeButtons);
+        activeButtons = NULL;
+    }
     activeButtonsc = 0;
 }
 

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "../screens/mainmenu/mainmenu.h"
 #include "../screens/settings/settings.h"
+#include "../screens/leaderboard/leaderboard.h"
 #include "../buttonmgr/buttonmgr.h"
 
 #include "gamemgr.h"
@@ -55,6 +56,8 @@ void setActiveScreen(enum Screens screen) {
     case SETTINGS:
         kill_Settings();
         break;
+    case LEADERBOARD:
+        kill_Leaderboard();
     default:
         break;
     }
@@ -66,6 +69,8 @@ void setActiveScreen(enum Screens screen) {
     case SETTINGS:
         init_Settings();
         break;
+    case LEADERBOARD:
+        init_Leaderboard();
     default:
         break;
     }
@@ -82,6 +87,10 @@ void renderActiveScreen() {
         break;
     case SETTINGS:
         render_Settings();
+        break;
+    case LEADERBOARD:
+        render_Leaderboard();
+        break;
     default:
         break;
     }
@@ -94,6 +103,10 @@ void killGameManager() {
         break;
     case SETTINGS:
         kill_Settings();
+        break;
+    case LEADERBOARD:
+        kill_Leaderboard();
+        break;
     default:
         break;
     }
