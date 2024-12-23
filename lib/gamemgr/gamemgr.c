@@ -90,6 +90,8 @@ void killGameManager() {
     case MENU:
         kill_MainMenu();
         break;
+    case SETTINGS:
+        kill_Settings();
     default:
         break;
     }

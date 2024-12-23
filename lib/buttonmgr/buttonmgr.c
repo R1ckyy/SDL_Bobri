@@ -1,11 +1,15 @@
 #include <string.h>
 #include "../gamemgr/gamemgr.h"
 #include "../screens/mainmenu/mainmenu.h"
+#include "../screens/settings/settings.h"
 
 #include "buttonmgr.h"
 
+static Button activeButtons[];
+
 Button createButton(TTF_Font *font, const char *text, int x, int y, int w, int h, ButtonFnc fnc) {
     Button btn;
+    
     btn.font = font;
     btn.text = text;
     btn.x = x;
@@ -42,10 +46,13 @@ void renderButton(Button btn, SDL_Color color, SDL_Color color_highl) {
     SDL_FreeSurface(surface);
 };
 
-void buttonCheck(int mouse_x, int mouse_y) {
+void buttonCheck() {
     switch (getActiveScreen()) {
     case MENU:
-        btnclk_MainMenu(mouse_x, mouse_y);
+        btnclk_MainMenu();
+        break;
+    case SETTINGS:
+        btnclk_Settings();
         break;
     default:
         break;

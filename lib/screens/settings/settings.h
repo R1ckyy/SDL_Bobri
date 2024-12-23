@@ -2,6 +2,8 @@
 
 #include <SDL2/SDL.h>
 
+void btnAction_ReturnToMenu();
+
 void init_Settings();
 
 void render_Settings();

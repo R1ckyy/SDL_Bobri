@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 if(event.button.button == SDL_BUTTON_LEFT) {
                     if(isDebug()) printf("Left mouse button pressed at [x:%d,y:%d]\n",getMousePos(X), getMousePos(Y));
-                    buttonCheck(getMousePos(X), getMousePos(Y));
+                    buttonCheck();
                 }
             }
 
