@@ -5,65 +5,88 @@
 
 #include "buttonmgr.h"
 
-static Button activeButtons[];
+static Button *activeButtons;
+static int activeButtonsc;
 
-Button createButton(TTF_Font *font, const char *text, int x, int y, int w, int h, ButtonFnc fnc) {
+void initButtonMgr() {
+    activeButtonsc = 0;
+    activeButtons = NULL;
+};
+
+void createButton(const char *id, TTF_Font *font, const char *text, int x, int y, int w, int h, SDL_Color color, SDL_Color color_highl, ButtonFnc fnc) {
     Button btn;
-    
+    btn.id = id;
     btn.font = font;
     btn.text = text;
     btn.x = x;
     btn.y = y;
     btn.w = w;
     btn.h = h;
+    btn.color = color;
+    btn.color_highl = color_highl;
     btn.action = fnc;
 
-    return btn;
+    if(activeButtonsc == 0) {
+        activeButtons = malloc(sizeof(Button) * (activeButtonsc+1));
+        activeButtons[activeButtonsc] = btn;
+        activeButtonsc++;
+    }else{
+        activeButtons = realloc(activeButtons, sizeof(Button) * (activeButtonsc+1));
+        activeButtons[activeButtonsc] = btn;
+        activeButtonsc++;
+    }
 };
 
-void renderButton(Button btn, SDL_Color color, SDL_Color color_highl) {
-    SDL_Surface *surface;
+void renderButtons() {
+    for (int i = 0; i < activeButtonsc; i++) {
+        Button btn = activeButtons[i];
 
-    if((getMousePos(X) >= btn.x && getMousePos(X) <= btn.x+btn.w) && (getMousePos(Y) >= btn.y && getMousePos(Y) <= btn.y+btn.h)) {
-        surface = TTF_RenderText_Blended(btn.font, btn.text, color_highl);
-    }else{
-        surface = TTF_RenderText_Blended(btn.font, btn.text, color);
+        SDL_Surface *surface;
+
+        if((getMousePos(X) >= btn.x && getMousePos(X) <= btn.x+btn.w) && 
+        (getMousePos(Y) >= btn.y && getMousePos(Y) <= btn.y+btn.h)) {
+            surface = TTF_RenderText_Blended(btn.font, btn.text, btn.color_highl);
+        }else{
+            surface = TTF_RenderText_Blended(btn.font, btn.text, btn.color);
+        }
+
+        SDL_Rect text_rect;
+        text_rect.x = btn.x;
+        text_rect.y = btn.y;
+        text_rect.w = btn.w;
+        text_rect.h = btn.h;
+
+        SDL_Texture* text_texture = SDL_CreateTextureFromSurface(getRenderer(), surface);
+
+        SDL_RenderDrawRect(getRenderer(), &text_rect);
+        
+        SDL_RenderCopy(getRenderer(), text_texture, NULL, &text_rect);
+
+        SDL_DestroyTexture(text_texture);
+        SDL_FreeSurface(surface);
+
     }
-
-    SDL_Rect text_rect;
-    text_rect.x = btn.x;
-    text_rect.y = btn.y;
-    text_rect.w = btn.w;
-    text_rect.h = btn.h;
-
-    SDL_Texture* text_texture = SDL_CreateTextureFromSurface(getRenderer(), surface);
-
-    SDL_RenderDrawRect(getRenderer(), &text_rect);
-    
-    SDL_RenderCopy(getRenderer(), text_texture, NULL, &text_rect);
-
-    SDL_DestroyTexture(text_texture);
-    SDL_FreeSurface(surface);
 };
 
 void buttonCheck() {
-    switch (getActiveScreen()) {
-    case MENU:
-        btnclk_MainMenu();
-        break;
-    case SETTINGS:
-        btnclk_Settings();
-        break;
-    default:
-        break;
-    }
-};
+    for (int i = 0; i < activeButtonsc; i++) {
+        Button btn = activeButtons[i];
 
-void runButtonFnc(Button btn) {
-    if((getMousePos(X) >= btn.x && getMousePos(X) <= btn.x+btn.w) && (getMousePos(Y) >= btn.y && getMousePos(Y) <= btn.y+btn.h)) {
+        if((getMousePos(X) >= btn.x && getMousePos(X) <= btn.x+btn.w) && (getMousePos(Y) >= btn.y && getMousePos(Y) <= btn.y+btn.h)) {
         btn.action();
+        }
     }
+    
 };
 
-void kill_Button(Button btn) {
+void cleanButtons() {
+    free(activeButtons);
+    activeButtons = NULL;
+    activeButtonsc = 0;
+}
+
+void killButtonMgr() {
+    if(activeButtons != NULL) {
+        free(activeButtons);
+    }
 };

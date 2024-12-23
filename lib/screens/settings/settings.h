@@ -8,6 +8,4 @@ void init_Settings();
 
 void render_Settings();
 
-void btnclk_Settings();
-
 void kill_Settings();

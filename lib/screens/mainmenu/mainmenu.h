@@ -11,6 +11,4 @@ void init_MainMenu();
 
 void render_MainMenu();
 
-void btnclk_MainMenu();
-
 void kill_MainMenu();

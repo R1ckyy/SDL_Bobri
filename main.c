@@ -11,6 +11,8 @@
 int main(int argc, char *argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init(); 
+
+    initButtonMgr();
     
     if(argc > 1){
         if(strcmp(argv[1], "-debug") == 0) initGameManager(true);
@@ -80,6 +82,7 @@ int main(int argc, char *argv[]) {
     }
 
     killGameManager();
+    killButtonMgr();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     TTF_Quit();

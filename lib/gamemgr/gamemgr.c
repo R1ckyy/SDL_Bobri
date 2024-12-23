@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "../screens/mainmenu/mainmenu.h"
 #include "../screens/settings/settings.h"
+#include "../buttonmgr/buttonmgr.h"
 
 #include "gamemgr.h"
 
@@ -46,6 +47,7 @@ int getMousePos(enum MousePos xy) {
 
 void setActiveScreen(enum Screens screen) {
     if(isDebug()) printf("Switching to screen: %d\n", screen);
+    cleanButtons();
     switch (gamemgr.currentScreen) {
     case MENU:
         kill_MainMenu();
