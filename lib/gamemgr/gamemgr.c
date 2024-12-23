@@ -1,7 +1,8 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include "../screens/mainmenu.h"
+#include "../screens/mainmenu/mainmenu.h"
+#include "../screens/settings/settings.h"
 
 #include "gamemgr.h"
 
@@ -12,7 +13,15 @@ void initGameManager(bool debug) {
     gamemgr.running = true;
     gamemgr.currentScreen = MENU;
     gamemgr.debug = debug;
-    if(gamemgr.debug) printf("-------------------\nDEBUG MODE ACTIVE\n-------------------\n");
+    if(isDebug()) printf("-------------------\nDEBUG MODE ACTIVE\n-------------------\n");
+};
+
+void initRenderer(SDL_Renderer *renderer) {
+    gamemgr.renderer = renderer;
+};
+
+SDL_Renderer* getRenderer() {
+    return gamemgr.renderer;
 };
 
 bool isRunning() {
@@ -27,11 +36,22 @@ bool isDebug() {
     return gamemgr.debug;
 };
 
+void updateMousePos() {
+    SDL_GetMouseState(&gamemgr.mouse_x, &gamemgr.mouse_y);
+}
+
+int getMousePos(enum MousePos xy) {
+    return xy == X ? gamemgr.mouse_x : gamemgr.mouse_y;
+};
+
 void setActiveScreen(enum Screens screen) {
     if(isDebug()) printf("Switching to screen: %d\n", screen);
     switch (gamemgr.currentScreen) {
     case MENU:
         kill_MainMenu();
+        break;
+    case SETTINGS:
+        kill_Settings();
         break;
     default:
         break;
@@ -40,6 +60,9 @@ void setActiveScreen(enum Screens screen) {
     switch (gamemgr.currentScreen) {
     case MENU:
         init_MainMenu();
+        break;
+    case SETTINGS:
+        init_Settings();
         break;
     default:
         break;
@@ -50,11 +73,13 @@ enum Screens getActiveScreen() {
     return gamemgr.currentScreen;
 };
 
-void renderActiveScreen(SDL_Renderer *renderer, int x, int y) {
+void renderActiveScreen() {
     switch (gamemgr.currentScreen) {
     case MENU:
-        render_MainMenu(renderer, x, y);
+        render_MainMenu();
         break;
+    case SETTINGS:
+        render_Settings();
     default:
         break;
     }

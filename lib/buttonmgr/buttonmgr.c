@@ -1,6 +1,6 @@
 #include <string.h>
 #include "../gamemgr/gamemgr.h"
-#include "../screens/mainmenu.h"
+#include "../screens/mainmenu/mainmenu.h"
 
 #include "buttonmgr.h"
 
@@ -17,10 +17,10 @@ Button createButton(TTF_Font *font, const char *text, int x, int y, int w, int h
     return btn;
 };
 
-void renderButton(Button btn, SDL_Renderer *renderer, SDL_Color color, SDL_Color color_highl, int mouse_x, int mouse_y) {
+void renderButton(Button btn, SDL_Color color, SDL_Color color_highl) {
     SDL_Surface *surface;
 
-    if((mouse_x >= btn.x && mouse_x <= btn.x+btn.w) && (mouse_y >= btn.y && mouse_y <= btn.y+btn.h)) {
+    if((getMousePos(X) >= btn.x && getMousePos(X) <= btn.x+btn.w) && (getMousePos(Y) >= btn.y && getMousePos(Y) <= btn.y+btn.h)) {
         surface = TTF_RenderText_Blended(btn.font, btn.text, color_highl);
     }else{
         surface = TTF_RenderText_Blended(btn.font, btn.text, color);
@@ -32,11 +32,11 @@ void renderButton(Button btn, SDL_Renderer *renderer, SDL_Color color, SDL_Color
     text_rect.w = btn.w;
     text_rect.h = btn.h;
 
-    SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_Texture* text_texture = SDL_CreateTextureFromSurface(getRenderer(), surface);
 
-    SDL_RenderDrawRect(renderer, &text_rect);
+    SDL_RenderDrawRect(getRenderer(), &text_rect);
     
-    SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
+    SDL_RenderCopy(getRenderer(), text_texture, NULL, &text_rect);
 
     SDL_DestroyTexture(text_texture);
     SDL_FreeSurface(surface);
@@ -52,8 +52,8 @@ void buttonCheck(int mouse_x, int mouse_y) {
     }
 };
 
-void runButtonFnc(Button btn, int mouse_x, int mouse_y) {
-    if((mouse_x >= btn.x && mouse_x <= btn.x+btn.w) && (mouse_y >= btn.y && mouse_y <= btn.y+btn.h)) {
+void runButtonFnc(Button btn) {
+    if((getMousePos(X) >= btn.x && getMousePos(X) <= btn.x+btn.w) && (getMousePos(Y) >= btn.y && getMousePos(Y) <= btn.y+btn.h)) {
         btn.action();
     }
 };

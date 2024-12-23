@@ -36,6 +36,8 @@ int main(int argc, char *argv[]) {
         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
     );
 
+    initRenderer(renderer);
+
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
@@ -44,7 +46,6 @@ int main(int argc, char *argv[]) {
     // --- ---
 
     while (isRunning()) {
-        static int x = 0, y = 0;
 
         while (SDL_PollEvent(&event))
         {
@@ -54,13 +55,13 @@ int main(int argc, char *argv[]) {
                 if(isDebug()) printf("Quit by Term signal.\n");
             }
             if (event.type == SDL_MOUSEMOTION) {
-                SDL_GetMouseState(&x, &y);
-                if(isDebug()) printf("Mouse: [x:%d,y:%d], ActiveScreen: %d\n", x,y, getActiveScreen());
+                updateMousePos();
+                if(isDebug()) printf("Mouse: [x:%d,y:%d], ActiveScreen: %d\n", getMousePos(X), getMousePos(Y), getActiveScreen());
             }
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 if(event.button.button == SDL_BUTTON_LEFT) {
-                    if(isDebug()) printf("Left mouse button pressed at [x:%d,y:%d]\n",x,y);
-                    buttonCheck(x,y);
+                    if(isDebug()) printf("Left mouse button pressed at [x:%d,y:%d]\n",getMousePos(X), getMousePos(Y));
+                    buttonCheck(getMousePos(X), getMousePos(Y));
                 }
             }
 
@@ -72,7 +73,7 @@ int main(int argc, char *argv[]) {
         // Vykresli pozadí
         SDL_RenderClear(renderer);
 
-        renderActiveScreen(renderer, x, y);
+        renderActiveScreen();
         
         // Zobraz vykreslené prvky na obrazovku
         SDL_RenderPresent(renderer);

@@ -9,8 +9,8 @@ void btnAction_Quit();
 
 void init_MainMenu();
 
-void render_MainMenu(SDL_Renderer *renderer, int mouse_x, int mouse_y);
+void render_MainMenu();
 
-void btnclk_MainMenu(int mouse_x, int mouse_y);
+void btnclk_MainMenu();
 
 void kill_MainMenu();

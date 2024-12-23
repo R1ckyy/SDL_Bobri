@@ -17,10 +17,10 @@ typedef struct {
 
 Button createButton(TTF_Font *font, const char *text, int x, int y, int w, int h, ButtonFnc fnc);
 
-void renderButton(Button btn, SDL_Renderer *renderer, SDL_Color color, SDL_Color color_highl, int mouse_x, int mouse_y);
+void renderButton(Button btn, SDL_Color color, SDL_Color color_highl);
 
-void buttonCheck(int mouse_x, int mouse_y);
+void buttonCheck();
 
-void runButtonFnc(Button btn, int mouse_x, int mouse_y);
+void runButtonFnc(Button btn);
 
 void kill_Button(Button btn);
