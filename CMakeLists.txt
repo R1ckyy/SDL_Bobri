@@ -7,6 +7,7 @@ file(GLOB_RECURSE CFILES
     main.c
     lib/**/*.c
     utils/**/*.c
+    utils/*.c
 )
 
 file(GLOB_RECURSE HFILES

@@ -4,6 +4,7 @@
 #include "../../buttonmgr/buttonmgr.h"
 #include "../../gamemgr/gamemgr.h"
 #include "../../../utils/imgrender/imgrender.h"
+#include "../../../utils/colors/colors.h"
 
 #include "mainmenu.h"
 
@@ -31,11 +32,6 @@ void init_MainMenu() {
     titlefont = TTF_OpenFont("fonts/Galindo.ttf", 72);
     mainfont = TTF_OpenFont("fonts/Roboto.ttf", 72);
 
-    SDL_Color white = {255, 255, 255, 255};
-SDL_Color grey = {150, 150, 150, 255};
-SDL_Color high = {0, 255, 255, 255};
-SDL_Color red = {255, 0, 0, 255};
-
     createButton("start", mainfont, "Start Game", 550, 300, 300, 75, grey, high, btnAction_StartGame);
     createButton("settings", mainfont, "Settings", 575, 400, 250, 75, grey, high, btnAction_Settings);
     createButton("leaderboard", mainfont, "Leaderboard", 550, 500, 300, 75, grey, high, btnAction_LeaderBoard);
@@ -43,11 +39,6 @@ SDL_Color red = {255, 0, 0, 255};
 };
 
 void render_MainMenu() {
-SDL_Color white = {255, 255, 255, 255};
-SDL_Color grey = {150, 150, 150, 255};
-SDL_Color high = {0, 255, 255, 255};
-SDL_Color red = {255, 0, 0, 255};
-
     SDL_SetRenderDrawColor(getRenderer(), 0, 0, 0, 0);
 
     renderImage("images/background_menu.png", 0, 0, 1400, 800);
