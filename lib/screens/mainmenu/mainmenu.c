@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 #include "../../../utils/textrender/textrender.h"
 #include "../../buttonmgr/buttonmgr.h"
 #include "../../gamemgr/gamemgr.h"
@@ -10,6 +11,8 @@
 
 static TTF_Font *titlefont;
 static TTF_Font *mainfont;
+
+static SDL_Texture *background_texture;
 
 void btnAction_StartGame() {
     setActiveScreen(GAME);
@@ -32,6 +35,8 @@ void init_MainMenu() {
     titlefont = TTF_OpenFont("fonts/Galindo.ttf", 72);
     mainfont = TTF_OpenFont("fonts/Roboto.ttf", 72);
 
+    background_texture = IMG_LoadTexture(getRenderer(),"images/background_menu.png");
+
     createButton("start", mainfont, "Start Game", 550, 300, 300, 75, grey, high, btnAction_StartGame);
     createButton("settings", mainfont, "Settings", 575, 400, 250, 75, grey, high, btnAction_Settings);
     createButton("leaderboard", mainfont, "Leaderboard", 550, 500, 300, 75, grey, high, btnAction_LeaderBoard);
@@ -41,7 +46,7 @@ void init_MainMenu() {
 void render_MainMenu() {
     SDL_SetRenderDrawColor(getRenderer(), 0, 0, 0, 0);
 
-    renderImage("images/background_menu.png", 0, 0, 1400, 800, 0);
+    renderImage(background_texture, 0, 0, 1400, 800, 0, 0);
 
     createText(titlefont, white, "Bobranci", 500, 100, 400, 150);
 
@@ -53,4 +58,6 @@ void render_MainMenu() {
 void kill_MainMenu() {
     TTF_CloseFont(titlefont);
     TTF_CloseFont(mainfont);
+
+    SDL_DestroyTexture(background_texture);
 };

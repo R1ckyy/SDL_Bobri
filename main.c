@@ -13,14 +13,6 @@ int main(int argc, char *argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init(); 
 
-    initButtonMgr();
-    initPlayerManager();
-    
-    if(argc > 1){
-        if(strcmp(argv[1], "-debug") == 0) initGameManager(true);
-        else initGameManager(DEBUG);
-    }else initGameManager(DEBUG);
-
     // --- INITIALIZE ---
 
     if(isDebug()) printf("Initializing.\n");
@@ -42,6 +34,14 @@ int main(int argc, char *argv[]) {
 
     initRenderer(renderer);
 
+    initButtonMgr();
+    initPlayerManager();
+
+    if(argc > 1){
+        if(strcmp(argv[1], "-debug") == 0) initGameManager(true);
+        else initGameManager(DEBUG);
+    }else initGameManager(DEBUG);
+
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
@@ -58,7 +58,6 @@ int main(int argc, char *argv[]) {
 
         while (SDL_PollEvent(&event))
         {
-
             if (event.type == SDL_QUIT) {
                 quitGame();
                 if(isDebug()) printf("Quit by Term signal.\n");
@@ -75,11 +74,13 @@ int main(int argc, char *argv[]) {
             }
             if (event.type == SDL_KEYDOWN) {
                 SDL_Keycode key = event.key.keysym.sym;
-                if(key == SDLK_w) printf("W prssed\n");
+                keyPressed(key);
             }
             if (event.type == SDL_KEYUP) {
                 SDL_Keycode key = event.key.keysym.sym;
+                keyUnpressed(key);
             }
+
         }
 
         // Nastav barvu vykreslování na černou

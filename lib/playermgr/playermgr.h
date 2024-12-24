@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include <SDL2/SDL.h>
 
 enum PlayerSetting {
     HUMAN,
@@ -14,6 +15,13 @@ enum Weapon {
     SPALKOVNICE
 };
 
+enum Movement {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT
+};
+
 typedef struct {
     int player_id;
     enum PlayerSetting setting;
@@ -23,9 +31,16 @@ typedef struct {
     int ammo;
     int x;
     int y;
+    bool keysPressed[5];
+    enum Movement lastKeyPressed;
 } Bober;
 
 void initPlayerManager();
+
+void keyPressed(SDL_KeyCode key);
+void keyUnpressed(SDL_KeyCode key);
+
+void movePlayers();
 
 void renderPlayers();
 

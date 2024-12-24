@@ -1,18 +1,29 @@
 #include "../../../utils/imgrender/imgrender.h"
+#include "../../gamemgr/gamemgr.h"
 #include "../../playermgr/playermgr.h"
 
 #include "ingame.h"
 
-void init_Ingame() {
+static bool gameStarted;
 
+static SDL_Texture *background_texture;
+
+void init_Ingame() {
+    gameStarted = true;
+
+    background_texture = IMG_LoadTexture(getRenderer(),"images/game_background.webp");
 };
 
 void render_Ingame() {
-    renderImage("images/game_background.webp", 0, 0, 1400, 800, 0);
+    renderImage(background_texture, 0, 0, 1400, 800, 0, 0);
+
+    if(gameStarted) {
+        movePlayers();
+    }
 
     renderPlayers();
 };
 
 void kill_Ingame() {
-
+    SDL_DestroyTexture(background_texture);
 };

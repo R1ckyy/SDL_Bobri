@@ -4,16 +4,12 @@
 
 #include "imgrender.h"
 
-void renderImage(const char *path, int x, int y, int w, int h, double angle) {
-    SDL_Texture * img = IMG_LoadTexture(getRenderer(), path);
-
+void renderImage(SDL_Texture *img, int x, int y, int w, int h, double angle, SDL_RendererFlip flip) {
     SDL_Rect rect;
     rect.x = x;
     rect.y = y;
     rect.w = w;
     rect.h = h;
 
-    SDL_RenderCopyEx(getRenderer(), img, NULL, &rect, angle, NULL, SDL_FLIP_NONE);
-
-    SDL_DestroyTexture(img);
+    SDL_RenderCopyEx(getRenderer(), img, NULL, &rect, angle, NULL, flip);
 };
