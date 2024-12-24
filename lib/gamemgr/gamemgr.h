@@ -15,12 +15,6 @@ enum MousePos {
     Y
 };
 
-enum PlayerSetting {
-    INACTIVE,
-    HUMAN,
-    BOT,
-};
-
 typedef struct {
     bool running;
     bool debug;
@@ -28,6 +22,7 @@ typedef struct {
     SDL_Renderer *renderer;
     int mouse_x;
     int mouse_y;
+    double deltaTime;
 } GameManager;
 
 void initGameManager(bool debug);
@@ -40,6 +35,9 @@ bool isRunning();
 void quitGame();
 
 bool isDebug();
+
+void updateDeltaTime(double deltaTime);
+double getDeltaTime();
 
 void updateMousePos();
 int getMousePos(enum MousePos);

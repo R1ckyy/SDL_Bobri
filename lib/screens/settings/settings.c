@@ -25,7 +25,7 @@ void init_Settings() {
 void render_Settings() {
     SDL_SetRenderDrawColor(getRenderer(), 0, 0, 0, 0);
 
-    renderImage("images/background_menu.png", 0, 0, 1400, 800);
+    renderImage("images/background_menu.png", 0, 0, 1400, 800, 0);
 
     createText(titlefont, white, "Settings", 50, 50, 300, 100);
     createText(mainfont, grey, "Copyright Erik Graf 2024/2025, All rights reserved", 0, 785, 300, 15);

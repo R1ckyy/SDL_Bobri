@@ -25,7 +25,7 @@ void init_Leaderboard() {
 void render_Leaderboard() {
     SDL_SetRenderDrawColor(getRenderer(), 0, 0, 0, 0);
 
-    renderImage("images/background_menu.png", 0, 0, 1400, 800);
+    renderImage("images/background_menu.png", 0, 0, 1400, 800, 0);
 
     createText(titlefont, white, "Leaderboard", 50, 50, 375, 100);
     createText(mainfont, grey, "Copyright Erik Graf 2024/2025, All rights reserved", 0, 785, 300, 15);

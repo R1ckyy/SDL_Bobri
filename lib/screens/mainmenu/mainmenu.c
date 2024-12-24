@@ -41,7 +41,7 @@ void init_MainMenu() {
 void render_MainMenu() {
     SDL_SetRenderDrawColor(getRenderer(), 0, 0, 0, 0);
 
-    renderImage("images/background_menu.png", 0, 0, 1400, 800);
+    renderImage("images/background_menu.png", 0, 0, 1400, 800, 0);
 
     createText(titlefont, white, "Bobranci", 500, 100, 400, 150);
 

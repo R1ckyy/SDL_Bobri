@@ -28,10 +28,18 @@ void createButton(const char *id, TTF_Font *font, const char *text, int x, int y
 
     if(activeButtonsc == 0) {
         activeButtons = malloc(sizeof(Button) * (activeButtonsc+1));
+        if(!activeButtons && isDebug()) {
+            fprintf(stderr, "Memory allocation of Buttons failed.\n");
+            exit(1);
+        }
         activeButtons[activeButtonsc] = btn;
         activeButtonsc++;
     }else{
         activeButtons = realloc(activeButtons, sizeof(Button) * (activeButtonsc+1));
+        if(!activeButtons && isDebug()) {
+            fprintf(stderr, "Memory allocation of Buttons failed.\n");
+            exit(1);
+        }
         activeButtons[activeButtonsc] = btn;
         activeButtonsc++;
     }

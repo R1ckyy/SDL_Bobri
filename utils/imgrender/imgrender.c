@@ -4,7 +4,7 @@
 
 #include "imgrender.h"
 
-void renderImage(const char *path, int x, int y, int w, int h) {
+void renderImage(const char *path, int x, int y, int w, int h, double angle) {
     SDL_Texture * img = IMG_LoadTexture(getRenderer(), path);
 
     SDL_Rect rect;
@@ -13,7 +13,7 @@ void renderImage(const char *path, int x, int y, int w, int h) {
     rect.w = w;
     rect.h = h;
 
-    SDL_RenderCopy(getRenderer(), img, NULL, &rect);
+    SDL_RenderCopyEx(getRenderer(), img, NULL, &rect, angle, NULL, SDL_FLIP_NONE);
 
     SDL_DestroyTexture(img);
 };

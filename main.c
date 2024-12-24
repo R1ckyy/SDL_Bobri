@@ -5,6 +5,7 @@
 
 #include "lib/gamemgr/gamemgr.h"
 #include "lib/buttonmgr/buttonmgr.h"
+#include "lib/playermgr/playermgr.h"
 
 #define DEBUG false
 
@@ -13,6 +14,7 @@ int main(int argc, char *argv[]) {
     TTF_Init(); 
 
     initButtonMgr();
+    initPlayerManager();
     
     if(argc > 1){
         if(strcmp(argv[1], "-debug") == 0) initGameManager(true);
@@ -47,7 +49,12 @@ int main(int argc, char *argv[]) {
 
     // --- ---
 
+    Uint64 last = SDL_GetPerformanceCounter();
+
     while (isRunning()) {
+        Uint64 now = SDL_GetPerformanceCounter();
+
+        updateDeltaTime((double)((now - last) / (double)SDL_GetPerformanceFrequency()));
 
         while (SDL_PollEvent(&event))
         {
@@ -58,7 +65,7 @@ int main(int argc, char *argv[]) {
             }
             if (event.type == SDL_MOUSEMOTION) {
                 updateMousePos();
-                if(isDebug()) printf("Mouse: [x:%d,y:%d], ActiveScreen: %d\n", getMousePos(X), getMousePos(Y), getActiveScreen());
+                if(isDebug()) printf("Mouse: [x:%d,y:%d], ActiveScreen: %d, deltaTime: %.3f\n", getMousePos(X), getMousePos(Y), getActiveScreen(), getDeltaTime());
             }
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 if(event.button.button == SDL_BUTTON_LEFT) {
@@ -66,7 +73,13 @@ int main(int argc, char *argv[]) {
                     buttonCheck();
                 }
             }
-
+            if (event.type == SDL_KEYDOWN) {
+                SDL_Keycode key = event.key.keysym.sym;
+                if(key == SDLK_w) printf("W prssed\n");
+            }
+            if (event.type == SDL_KEYUP) {
+                SDL_Keycode key = event.key.keysym.sym;
+            }
         }
 
         // Nastav barvu vykreslování na černou
@@ -79,10 +92,13 @@ int main(int argc, char *argv[]) {
         
         // Zobraz vykreslené prvky na obrazovku
         SDL_RenderPresent(renderer);
+
+        last = now;
     }
 
     killGameManager();
     killButtonMgr();
+    killPlayerManager();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     TTF_Quit();

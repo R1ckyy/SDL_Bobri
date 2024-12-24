@@ -4,6 +4,7 @@
 #include "../screens/mainmenu/mainmenu.h"
 #include "../screens/settings/settings.h"
 #include "../screens/leaderboard/leaderboard.h"
+#include "../screens/ingame/ingame.h"
 #include "../buttonmgr/buttonmgr.h"
 
 #include "gamemgr.h"
@@ -38,6 +39,14 @@ bool isDebug() {
     return gamemgr.debug;
 };
 
+void updateDeltaTime(double deltaTime) {
+    gamemgr.deltaTime = deltaTime;
+};
+
+double getDeltaTime() {
+    return gamemgr.deltaTime;
+};
+
 void updateMousePos() {
     SDL_GetMouseState(&gamemgr.mouse_x, &gamemgr.mouse_y);
 }
@@ -58,6 +67,10 @@ void setActiveScreen(enum Screens screen) {
         break;
     case LEADERBOARD:
         kill_Leaderboard();
+        break;
+    case GAME:
+        kill_Ingame();
+        break;
     default:
         break;
     }
@@ -71,6 +84,10 @@ void setActiveScreen(enum Screens screen) {
         break;
     case LEADERBOARD:
         init_Leaderboard();
+        break;
+    case GAME:
+        init_Ingame();
+        break;
     default:
         break;
     }
@@ -91,6 +108,9 @@ void renderActiveScreen() {
     case LEADERBOARD:
         render_Leaderboard();
         break;
+    case GAME:
+        render_Ingame();
+        break;
     default:
         break;
     }
@@ -106,6 +126,9 @@ void killGameManager() {
         break;
     case LEADERBOARD:
         kill_Leaderboard();
+        break;
+    case GAME:
+        kill_Ingame();
         break;
     default:
         break;
