@@ -6,6 +6,7 @@
 #include "lib/gamemgr/gamemgr.h"
 #include "lib/buttonmgr/buttonmgr.h"
 #include "lib/playermgr/playermgr.h"
+#include "lib/wallsmgr/wallsmgr.h"
 
 #define DEBUG false
 
@@ -32,15 +33,21 @@ int main(int argc, char *argv[]) {
         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
     );
 
+    // Get the load order right (i have no idea help)
+
     initRenderer(renderer);
 
     initButtonMgr();
-    initPlayerManager();
 
     if(argc > 1){
         if(strcmp(argv[1], "-debug") == 0) initGameManager(true);
         else initGameManager(DEBUG);
     }else initGameManager(DEBUG);
+        
+    initWallsManager();
+    initPlayerManager();
+
+    // End load order
 
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
@@ -64,7 +71,6 @@ int main(int argc, char *argv[]) {
             }
             if (event.type == SDL_MOUSEMOTION) {
                 updateMousePos();
-                if(isDebug()) printf("Mouse: [x:%d,y:%d], ActiveScreen: %d, deltaTime: %.3f\n", getMousePos(X), getMousePos(Y), getActiveScreen(), getDeltaTime());
             }
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 if(event.button.button == SDL_BUTTON_LEFT) {
@@ -83,6 +89,8 @@ int main(int argc, char *argv[]) {
 
         }
 
+        if(isDebug()) printf("Mouse: [x:%d,y:%d], ActiveScreen: %d, deltaTime: %.3f\n", getMousePos(X), getMousePos(Y), getActiveScreen(), getDeltaTime());
+
         // Nastav barvu vykreslování na černou
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
@@ -99,6 +107,7 @@ int main(int argc, char *argv[]) {
 
     killGameManager();
     killButtonMgr();
+    killWallsManager();
     killPlayerManager();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

@@ -110,6 +110,7 @@ void renderActiveScreen() {
         break;
     case GAME:
         render_Ingame();
+        logic_Ingame();
         break;
     default:
         break;

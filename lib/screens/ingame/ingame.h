@@ -5,5 +5,6 @@
 void init_Ingame();
 
 void render_Ingame();
+void logic_Ingame();
 
 void kill_Ingame();

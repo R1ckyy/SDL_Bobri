@@ -29,8 +29,7 @@ typedef struct {
     int points;
     enum Weapon active_weapon;
     int ammo;
-    int x;
-    int y;
+    SDL_Rect rect;
     bool keysPressed[5];
     enum Movement lastKeyPressed;
 } Bober;
@@ -39,6 +38,8 @@ void initPlayerManager();
 
 void keyPressed(SDL_KeyCode key);
 void keyUnpressed(SDL_KeyCode key);
+
+void randomPos(int id);
 
 void movePlayers();
 
