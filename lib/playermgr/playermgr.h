@@ -45,4 +45,6 @@ void movePlayers();
 
 void renderPlayers();
 
+void renderPlayersHud();
+
 void killPlayerManager();

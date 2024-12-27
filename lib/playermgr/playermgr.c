@@ -53,7 +53,7 @@ void initPlayerManager() {
         bobr.player_id = i;
         bobr.setting = HUMAN;
         bobr.alive = false;
-        bobr.points = 99;
+        bobr.points = i*11;
         bobr.active_weapon = VETEV;
         bobr.ammo = -1;
         bobr.rect.x = 0;
@@ -165,13 +165,20 @@ void renderPlayers() {
 
         renderImage(bobersTextures[i], bobers[i].rect.x, bobers[i].rect.y, BOBERSIZE, BOBERSIZE, angle, SDL_FLIP_NONE);
 
+        
+    }
+}
+
+void renderPlayersHud() {
+    for (int i = 0; i < 3; i++) {
         char buf[5];
         sprintf(buf, "%2d", bobers[i].points);
         SDL_SetRenderDrawColor(getRenderer(), 0, 0, 0, 0);
         createText(mainfont, white, buf, bobers[i].rect.x-10, bobers[i].rect.y, 25, 25);
         renderImage(point_icon, bobers[i].rect.x-35, bobers[i].rect.y, 25, 25, 0, SDL_FLIP_NONE);
     }
-}
+    
+};
 
 void killPlayerManager() {
     free(bobers);
