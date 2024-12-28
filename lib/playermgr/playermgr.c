@@ -50,16 +50,17 @@ void initPlayerManager() {
     for (int i = 0; i < 3; i++) {
         Bober bobr;
         bobr.setting = HUMAN;
-        bobr.alive = false;
-        bobr.points = i*11;
+        bobr.alive = true;
+        bobr.points = 0;
         bobr.active_weapon = i;
-        bobr.ammo = 1;
+        bobr.ammo = 2;
         bobr.rect.x = 0;
         bobr.rect.y = 0;
         bobr.rect.w = BOBERSIZE;
         bobr.rect.h = BOBERSIZE;
         bobr.angle = 0;
         bobr.lastFired = SDL_GetTicks();
+        bobr.lastDied = SDL_GetTicks();
         for (int j = 0; j < 5; j++) {
             bobr.keysPressed[j] = false;
         }
@@ -107,12 +108,14 @@ void randomPos(int id) {
         bobers[id].rect.x = x;
         bobers[id].rect.y = y;
         if(WallRectCollision(bobers[id].rect) && isDebug()) printf("Player [%d] spawned in a wall, respawning.\n", id);
-    }while(WallRectCollision(bobers[id].rect));
+        if((PlayerRectCollisionExc(bobers[id].rect, id) != -1) && isDebug()) printf("Player [%d] spawned in another player, respawning.\n", id);
+    }while(WallRectCollision(bobers[id].rect) || PlayerRectCollisionExc(bobers[id].rect, id) != -1);
 };
 
 void movePlayers() {
     for (int i = 0; i < 3; i++) {
         if(bobers[i].setting == INACTIVE) continue;
+        if(!bobers[i].alive) continue;
         SDL_Rect predictedRect = bobers[i].rect;
         if (bobers[i].keysPressed[UP]) {
             predictedRect.y -= (BOBERSPEED * getDeltaTime());
@@ -140,11 +143,55 @@ void movePlayers() {
 
         if(bobers[i].ammo == -1) bobers[i].active_weapon = VETEV;
 
-        if(bobers[i].keysPressed[4] && (bobers[i].lastFired + FIRECOOLDOWN) <= SDL_GetTicks()) {
-            bobers[i].lastFired = SDL_GetTicks();
+        int cooldown = FIRECOOLDOWN - (bobers[i].active_weapon == PAREZ ? 1000 : 0);
 
-            bulletFired(bobers[i]);
+        if(bobers[i].keysPressed[4] && (bobers[i].lastFired + cooldown) <= SDL_GetTicks()) {
+            bobers[i].lastFired = SDL_GetTicks();
+            bulletFired(bobers[i], i);
+            if(bobers[i].active_weapon != VETEV) {
+                bobers[i].ammo--;
+                if(bobers[i].ammo == -1) bobers[i].active_weapon = VETEV;
+            }
         }
+    }
+};
+
+int PlayerRectCollision(SDL_Rect rect) {
+    SDL_Rect result;
+    for (int i = 0; i < 3; i++) {
+        if(!bobers[i].alive) continue;
+        if(SDL_IntersectRect(&bobers[i].rect, &rect, &result) == SDL_TRUE) return i;
+    }
+    return -1;
+};
+
+int PlayerRectCollisionExc(SDL_Rect rect, int excluding_bober) {
+    SDL_Rect result;
+    for (int i = 0; i < 3; i++) {
+        if(i == excluding_bober) continue;
+        if(!bobers[i].alive) continue;
+        if(SDL_IntersectRect(&bobers[i].rect, &rect, &result) == SDL_TRUE) return i;
+    }
+    return -1;
+};
+
+void PlayerShot(int id, int owner_bober_id) {
+    bobers[id].lastDied = SDL_GetTicks();
+    bobers[id].alive = false;
+    bobers[id].points--;
+    bobers[owner_bober_id].points+=3;
+    bobers[id].angle = rand() % 360;
+};
+
+void respawnPlayers() {
+    for (int i = 0; i < 3; i++) {
+        if(bobers[i].alive) continue;
+        if(bobers[i].lastDied + RESPAWNTIME <= SDL_GetTicks()) {
+            randomPos(i);
+            bobers[i].active_weapon = VETEV;
+            bobers[i].ammo = -1;
+            bobers[i].alive = true;
+        }   
     }
 };
 
@@ -152,35 +199,42 @@ void renderPlayers() {
     for (int i = 0; i < 3; i++) {
         if(bobers[i].setting == INACTIVE) continue;
 
-        if(bobers[i].keysPressed[UP]) bobers[i].angle = 0;
-        else if(bobers[i].keysPressed[DOWN]) bobers[i].angle = 180;
-        else if(bobers[i].keysPressed[LEFT]) bobers[i].angle = 270;
-        else if(bobers[i].keysPressed[RIGHT]) bobers[i].angle = 90;
-        else {
-            if(bobers[i].lastKeyPressed == UP) bobers[i].angle = 0;
-            else if(bobers[i].lastKeyPressed == DOWN) bobers[i].angle = 180;
-            else if(bobers[i].lastKeyPressed == LEFT) bobers[i].angle = 270;
-            else if(bobers[i].lastKeyPressed == RIGHT) bobers[i].angle = 90;
+        if(bobers[i].alive) {
+            SDL_SetTextureColorMod(bobersTextures[i], 255, 255, 255);
+
+            if(bobers[i].keysPressed[UP]) bobers[i].angle = 0;
+            else if(bobers[i].keysPressed[DOWN]) bobers[i].angle = 180;
+            else if(bobers[i].keysPressed[LEFT]) bobers[i].angle = 270;
+            else if(bobers[i].keysPressed[RIGHT]) bobers[i].angle = 90;
+            else {
+                if(bobers[i].lastKeyPressed == UP) bobers[i].angle = 0;
+                else if(bobers[i].lastKeyPressed == DOWN) bobers[i].angle = 180;
+                else if(bobers[i].lastKeyPressed == LEFT) bobers[i].angle = 270;
+                else if(bobers[i].lastKeyPressed == RIGHT) bobers[i].angle = 90;
+            }
+
+            if(bobers[i].angle == 0) {
+                renderImage(weaponTextures[bobers[i].active_weapon], bobers[i].rect.x+BOBERSIZE/2-WEAPONSIZE/2, bobers[i].rect.y-WEAPONSIZE, WEAPONSIZE, WEAPONSIZE, -90, SDL_FLIP_NONE);
+            } else if (bobers[i].angle == 90) {
+                renderImage(weaponTextures[bobers[i].active_weapon], bobers[i].rect.x+BOBERSIZE, bobers[i].rect.y+BOBERSIZE/2-WEAPONSIZE/2, WEAPONSIZE, WEAPONSIZE, 0, SDL_FLIP_NONE);
+            } else if (bobers[i].angle == 180) {
+                renderImage(weaponTextures[bobers[i].active_weapon], bobers[i].rect.x+BOBERSIZE/2-WEAPONSIZE/2, bobers[i].rect.y+BOBERSIZE, WEAPONSIZE, WEAPONSIZE, 90, SDL_FLIP_NONE);
+            } else {
+                renderImage(weaponTextures[bobers[i].active_weapon], bobers[i].rect.x-WEAPONSIZE, bobers[i].rect.y+BOBERSIZE/2-WEAPONSIZE/2, WEAPONSIZE, WEAPONSIZE, 0, SDL_FLIP_HORIZONTAL);
+            }
+
+            renderImage(bobersTextures[i], bobers[i].rect.x, bobers[i].rect.y, BOBERSIZE, BOBERSIZE, bobers[i].angle, SDL_FLIP_NONE);
+        }else {
+            SDL_SetTextureColorMod(bobersTextures[i], 255, 0, 0);
+            renderImage(bobersTextures[i], bobers[i].rect.x, bobers[i].rect.y, BOBERSIZE, BOBERSIZE, bobers[i].angle, SDL_FLIP_NONE);
+            SDL_SetTextureColorMod(bobersTextures[i], 255, 255, 255);
         }
-
-        if(bobers[i].angle == 0) {
-            renderImage(weaponTextures[bobers[i].active_weapon], bobers[i].rect.x+BOBERSIZE/2-WEAPONSIZE/2, bobers[i].rect.y-WEAPONSIZE, WEAPONSIZE, WEAPONSIZE, -90, SDL_FLIP_NONE);
-        } else if (bobers[i].angle == 90) {
-            renderImage(weaponTextures[bobers[i].active_weapon], bobers[i].rect.x+BOBERSIZE, bobers[i].rect.y+BOBERSIZE/2-WEAPONSIZE/2, WEAPONSIZE, WEAPONSIZE, 0, SDL_FLIP_NONE);
-        } else if (bobers[i].angle == 180) {
-            renderImage(weaponTextures[bobers[i].active_weapon], bobers[i].rect.x+BOBERSIZE/2-WEAPONSIZE/2, bobers[i].rect.y+BOBERSIZE, WEAPONSIZE, WEAPONSIZE, 90, SDL_FLIP_NONE);
-        } else {
-            renderImage(weaponTextures[bobers[i].active_weapon], bobers[i].rect.x-WEAPONSIZE, bobers[i].rect.y+BOBERSIZE/2-WEAPONSIZE/2, WEAPONSIZE, WEAPONSIZE, 0, SDL_FLIP_HORIZONTAL);
-        }
-
-        renderImage(bobersTextures[i], bobers[i].rect.x, bobers[i].rect.y, BOBERSIZE, BOBERSIZE, bobers[i].angle, SDL_FLIP_NONE);
-
-        
     }
 }
 
 void renderPlayersHud() {
     for (int i = 0; i < 3; i++) {
+        if(!bobers[i].alive) continue;
         char buf[5];
         sprintf(buf, "%2d", bobers[i].points);
         SDL_SetRenderDrawColor(getRenderer(), 0, 0, 0, 0);

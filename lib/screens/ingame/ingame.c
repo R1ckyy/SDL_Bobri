@@ -23,8 +23,8 @@ Uint32 gameEnd;
 void init_Ingame() {
     gameStarted = false;
 
-    gameStart = SDL_GetTicks() + 5000;
-    gameEnd = SDL_GetTicks() + 5000 + 45000;
+    gameStart = SDL_GetTicks() + STARTCOUNTDOWN;
+    gameEnd = SDL_GetTicks() + STARTCOUNTDOWN + GAMETIME;
 
     background_texture = IMG_LoadTexture(getRenderer(),"images/game_background.webp");
 
@@ -63,6 +63,7 @@ void logic_Ingame() {
     }
 
     if(gameStarted) {
+        respawnPlayers();
         movePlayers();
         bulletLogic();
     }

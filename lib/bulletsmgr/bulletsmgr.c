@@ -39,13 +39,12 @@ Bullet createBullet(Bober firing_bober) {
     return bullet;
 };
 
-void bulletFired(Bober firing_bober) {
-    printf("Bullet fired\n");
-
+void bulletFired(Bober firing_bober, int bober_id) {
     if(firing_bober.active_weapon == VETEV) {
         if(bulletc == 0) {
             bulletc++;
             bullets = malloc(sizeof(Bullet) * bulletc);
+            if(bullets == NULL && isDebug()) fprintf(stderr, "Memory allocation for Bullets failed.\n");
         }else{
             bulletc++;
             bullets = realloc(bullets, sizeof(Bullet) * bulletc);
@@ -53,6 +52,7 @@ void bulletFired(Bober firing_bober) {
         Bullet bullet = createBullet(firing_bober);
         bullet.x_vel = firing_bober.angle == 90 ? 1 : firing_bober.angle == 270 ? -1 : 0;
         bullet.y_vel = firing_bober.angle == 0 ? -1 : firing_bober.angle == 180 ? 1 : 0;
+        bullet.id_bober_owner = bober_id;
 
         bullets[bulletc-1] = bullet;
     }else if(firing_bober.active_weapon == PAREZ) {
@@ -60,6 +60,7 @@ void bulletFired(Bober firing_bober) {
         if(bulletc == 0) {
             bulletc++;
             bullets = malloc(sizeof(Bullet) * bulletc);
+            if(bullets == NULL && isDebug()) fprintf(stderr, "Memory allocation for Bullets failed.\n");
         }else{
             bulletc++;
             bullets = realloc(bullets, sizeof(Bullet) * bulletc);
@@ -67,21 +68,50 @@ void bulletFired(Bober firing_bober) {
         Bullet bullet = createBullet(firing_bober);
         bullet.x_vel = firing_bober.angle == 90 ? 2 : firing_bober.angle == 270 ? -2 : 0;
         bullet.y_vel = firing_bober.angle == 0 ? -2 : firing_bober.angle == 180 ? 2 : 0;
+        bullet.id_bober_owner = bober_id;
 
         bullets[bulletc-1] = bullet;
     } else {
+        printf("prujem\n");
         if(bulletc == 0) {
-            bulletc++;
+            bulletc+=3;
             bullets = malloc(sizeof(Bullet) * bulletc);
+            if(bullets == NULL && isDebug()) fprintf(stderr, "Memory allocation for Bullets failed.\n");
         }else{
-            bulletc++;
+            bulletc+=3;
             bullets = realloc(bullets, sizeof(Bullet) * bulletc);
         }           
-        Bullet bullet = createBullet(firing_bober);
-        bullet.x_vel = firing_bober.angle == 90 ? 1 : firing_bober.angle == 270 ? -1 : 0;
-        bullet.y_vel = firing_bober.angle == 0 ? -1 : firing_bober.angle == 180 ? 1 : 0;
+        Bullet bullet1 = createBullet(firing_bober);
+        bullet1.x_vel = firing_bober.angle == 90 ? 0.5 : firing_bober.angle == 270 ? -0.5 : 0;
+        bullet1.y_vel = firing_bober.angle == 0 ? -0.5 : firing_bober.angle == 180 ? 0.5 : 0;
+        bullet1.id_bober_owner = bober_id;
+        Bullet bullet2 = createBullet(firing_bober);
+        bullet2.x_vel = firing_bober.angle == 0 ? 0.25 :
+                        firing_bober.angle == 90 ? 0.5 :
+                        firing_bober.angle == 180 ? -0.25 :
+                        firing_bober.angle == 270 ? -0.5 : 0;
+        bullet2.y_vel = firing_bober.angle == 0 ? -0.5 :
+                        firing_bober.angle == 90 ? 0.25 :
+                        firing_bober.angle == 180 ? 0.5 :
+                        firing_bober.angle == 270 ? -0.25 : 0;        
+        bullet2.id_bober_owner = bober_id;
+        Bullet bullet3 = createBullet(firing_bober);
+        bullet3.x_vel = firing_bober.angle == 0 ? -0.25 :
+                        firing_bober.angle == 90 ? 0.5 :
+                        firing_bober.angle == 180 ? 0.25 :
+                        firing_bober.angle == 270 ? -0.5 : 0;
+        bullet3.y_vel = firing_bober.angle == 0 ? -0.5 :
+                        firing_bober.angle == 90 ? -0.25 :
+                        firing_bober.angle == 180 ? 0.5 :
+                        firing_bober.angle == 270 ? 0.25 : 0;
+        bullet3.id_bober_owner = bober_id;
 
-        bullets[bulletc-1] = bullet;
+        printf("1 %.2f,%.2f\n",bullet2.x_vel,bullet2.y_vel);
+        printf("2 %.2f,%.2f\n",bullet3.x_vel,bullet3.y_vel);
+
+        bullets[bulletc-1] = bullet1;
+        bullets[bulletc-2] = bullet2;
+        bullets[bulletc-3] = bullet3;
     }    
 };
 
@@ -95,7 +125,15 @@ void bulletLogic() {
         if(bullets[i].rect.x >= 1400 || bullets[i].rect.x+BULLETSIZE <= 0) bullets[i].remove = true; 
         if(bullets[i].rect.y >= 800 || bullets[i].rect.y+BULLETSIZE <= 0) bullets[i].remove = true;
         if(WallRectCollision(bullets[i].rect)) bullets[i].remove = true;
+
+        int hit = PlayerRectCollision(bullets[i].rect);
+        if(hit != -1) {
+            bullets[i].remove = true;
+            PlayerShot(hit, bullets[i].id_bober_owner);
+        } 
     }
+
+    //Kil buletz
 
     int new_bulletc = 0;
     for (int i = 0; i < bulletc; i++) {
@@ -104,7 +142,11 @@ void bulletLogic() {
         }
     }
 
-    Bullet *new_bullets = malloc(sizeof(Bullet) * new_bulletc);
+    Bullet *new_bullets = NULL;
+    if (new_bulletc > 0) {
+        new_bullets = malloc(sizeof(Bullet) * new_bulletc);
+    }
+
     int index = 0;
     for (int i = 0; i < bulletc; i++) {
         if (!bullets[i].remove) {
@@ -115,7 +157,7 @@ void bulletLogic() {
 
     free(bullets);
     bullets = new_bullets;
-    bulletc = new_bulletc;    
+    bulletc = new_bulletc;
 };
 
 void renderBullets() {

@@ -7,6 +7,7 @@
 #define BOBERSIZE 110
 #define WEAPONSIZE 50
 #define FIRECOOLDOWN 2000
+#define RESPAWNTIME 5000
 
 enum PlayerSetting {
     HUMAN,
@@ -34,6 +35,7 @@ typedef struct {
     enum Weapon active_weapon;
     int ammo;
     Uint32 lastFired;
+    Uint32 lastDied;
     SDL_Rect rect; 
     double angle;
     bool keysPressed[5];
@@ -48,6 +50,12 @@ void keyUnpressed(SDL_KeyCode key);
 void randomPos(int id);
 
 void movePlayers();
+
+int PlayerRectCollision(SDL_Rect rect);
+int PlayerRectCollisionExc(SDL_Rect rect, int excluding_bober);
+
+void PlayerShot(int id, int owner_bober_id);
+void respawnPlayers();
 
 void renderPlayers();
 
