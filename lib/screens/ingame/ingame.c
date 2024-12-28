@@ -6,6 +6,7 @@
 #include "../../gamemgr/gamemgr.h"
 #include "../../playermgr/playermgr.h"
 #include "../../wallsmgr/wallsmgr.h"
+#include "../../bulletsmgr/bulletsmgr.h"
 
 #include "ingame.h"
 
@@ -36,6 +37,8 @@ void render_Ingame() {
 
     renderPlayers();
 
+    renderBullets();
+
     renderWalls();
 
     renderPlayersHud();
@@ -61,6 +64,7 @@ void logic_Ingame() {
 
     if(gameStarted) {
         movePlayers();
+        bulletLogic();
     }
 };
 

@@ -8,13 +8,10 @@
 #include "../../utils/imgrender/imgrender.h"
 #include "../../utils/textrender/textrender.h"
 #include "../../utils/colors/colors.h"
+#include "../bulletsmgr/bulletsmgr.h"
 #include "../wallsmgr/wallsmgr.h"
 
 #include "playermgr.h"
-
-#define BOBERSPEED 330
-#define BOBERSIZE 110
-#define WEAPONSIZE 50
 
 static Bober *bobers;
 
@@ -35,6 +32,8 @@ static SDL_KeyCode keyboard_layout [3][5] = {
 };
 
 void initPlayerManager() {
+    initBulletManager();
+
     bobers = malloc(sizeof(Bober) * 3);
     if(!bobers && isDebug()) {
         fprintf(stderr, "Memory allocation of Bobers failed.\n");
@@ -50,16 +49,17 @@ void initPlayerManager() {
 
     for (int i = 0; i < 3; i++) {
         Bober bobr;
-        bobr.player_id = i;
         bobr.setting = HUMAN;
         bobr.alive = false;
         bobr.points = i*11;
-        bobr.active_weapon = VETEV;
-        bobr.ammo = -1;
+        bobr.active_weapon = i;
+        bobr.ammo = 1;
         bobr.rect.x = 0;
         bobr.rect.y = 0;
         bobr.rect.w = BOBERSIZE;
         bobr.rect.h = BOBERSIZE;
+        bobr.angle = 0;
+        bobr.lastFired = SDL_GetTicks();
         for (int j = 0; j < 5; j++) {
             bobr.keysPressed[j] = false;
         }
@@ -83,14 +83,15 @@ void keyPressed(SDL_KeyCode key) {
                 bobers[i].keysPressed[j] = true;
                 bobers[i].lastKeyPressed = j;
             } 
-        }      
+        } 
+        if(key == keyboard_layout[i][4]) bobers[i].keysPressed[4] = true;
     }
 };
 
 void keyUnpressed(SDL_KeyCode key) {
     for (int i = 0; i < 3; i++) {
         if(bobers[i].setting != HUMAN) continue;
-        for (int j = 0; j < 4; j++) {
+        for (int j = 0; j < 5; j++) {
             if(key == keyboard_layout[i][j]) bobers[i].keysPressed[j] = false;
         }      
     }
@@ -133,37 +134,46 @@ void movePlayers() {
             if(WallRectCollision(predictedRect)) continue;
             if(bobers[i].rect.x + (BOBERSPEED * getDeltaTime()) >= (1400 - BOBERSIZE)) bobers[i].rect.x = (1400 - BOBERSIZE);
             else bobers[i].rect.x += (BOBERSPEED * getDeltaTime());
-        }          
+        }     
+
+        //Bullets
+
+        if(bobers[i].ammo == -1) bobers[i].active_weapon = VETEV;
+
+        if(bobers[i].keysPressed[4] && (bobers[i].lastFired + FIRECOOLDOWN) <= SDL_GetTicks()) {
+            bobers[i].lastFired = SDL_GetTicks();
+
+            bulletFired(bobers[i]);
+        }
     }
 };
 
 void renderPlayers() {
     for (int i = 0; i < 3; i++) {
         if(bobers[i].setting == INACTIVE) continue;
-        double angle;
 
-        if(bobers[i].keysPressed[UP]) angle = 0;
-        else if(bobers[i].keysPressed[DOWN]) angle = 180;
-        else if(bobers[i].keysPressed[LEFT]) angle = 270;
-        else if(bobers[i].keysPressed[RIGHT]) angle = 90;
+        if(bobers[i].keysPressed[UP]) bobers[i].angle = 0;
+        else if(bobers[i].keysPressed[DOWN]) bobers[i].angle = 180;
+        else if(bobers[i].keysPressed[LEFT]) bobers[i].angle = 270;
+        else if(bobers[i].keysPressed[RIGHT]) bobers[i].angle = 90;
         else {
-            if(bobers[i].lastKeyPressed == UP) angle = 0;
-            else if(bobers[i].lastKeyPressed == DOWN) angle = 180;
-            else if(bobers[i].lastKeyPressed == LEFT) angle = 270;
-            else if(bobers[i].lastKeyPressed == RIGHT) angle = 90;
+            if(bobers[i].lastKeyPressed == UP) bobers[i].angle = 0;
+            else if(bobers[i].lastKeyPressed == DOWN) bobers[i].angle = 180;
+            else if(bobers[i].lastKeyPressed == LEFT) bobers[i].angle = 270;
+            else if(bobers[i].lastKeyPressed == RIGHT) bobers[i].angle = 90;
         }
 
-        if(angle == 0) {
+        if(bobers[i].angle == 0) {
             renderImage(weaponTextures[bobers[i].active_weapon], bobers[i].rect.x+BOBERSIZE/2-WEAPONSIZE/2, bobers[i].rect.y-WEAPONSIZE, WEAPONSIZE, WEAPONSIZE, -90, SDL_FLIP_NONE);
-        } else if (angle == 90) {
-            renderImage(weaponTextures[bobers[i].active_weapon], bobers[i].rect.x+BOBERSIZE/2+WEAPONSIZE, bobers[i].rect.y+BOBERSIZE/2-WEAPONSIZE/2, WEAPONSIZE, WEAPONSIZE, 0, SDL_FLIP_NONE);
-        } else if (angle == 180) {
-            renderImage(weaponTextures[bobers[i].active_weapon], bobers[i].rect.x+BOBERSIZE/2-WEAPONSIZE/2, bobers[i].rect.y+BOBERSIZE/2+WEAPONSIZE, WEAPONSIZE, WEAPONSIZE, 90, SDL_FLIP_NONE);
+        } else if (bobers[i].angle == 90) {
+            renderImage(weaponTextures[bobers[i].active_weapon], bobers[i].rect.x+BOBERSIZE, bobers[i].rect.y+BOBERSIZE/2-WEAPONSIZE/2, WEAPONSIZE, WEAPONSIZE, 0, SDL_FLIP_NONE);
+        } else if (bobers[i].angle == 180) {
+            renderImage(weaponTextures[bobers[i].active_weapon], bobers[i].rect.x+BOBERSIZE/2-WEAPONSIZE/2, bobers[i].rect.y+BOBERSIZE, WEAPONSIZE, WEAPONSIZE, 90, SDL_FLIP_NONE);
         } else {
             renderImage(weaponTextures[bobers[i].active_weapon], bobers[i].rect.x-WEAPONSIZE, bobers[i].rect.y+BOBERSIZE/2-WEAPONSIZE/2, WEAPONSIZE, WEAPONSIZE, 0, SDL_FLIP_HORIZONTAL);
         }
 
-        renderImage(bobersTextures[i], bobers[i].rect.x, bobers[i].rect.y, BOBERSIZE, BOBERSIZE, angle, SDL_FLIP_NONE);
+        renderImage(bobersTextures[i], bobers[i].rect.x, bobers[i].rect.y, BOBERSIZE, BOBERSIZE, bobers[i].angle, SDL_FLIP_NONE);
 
         
     }
@@ -181,6 +191,8 @@ void renderPlayersHud() {
 };
 
 void killPlayerManager() {
+    killBulletManager();
+    
     free(bobers);
 
     for (int i = 0; i < 3; i++) {
@@ -190,5 +202,5 @@ void killPlayerManager() {
 
     TTF_CloseFont(mainfont);
 
-    SDL_DestroyTexture(point_icon);    
+    SDL_DestroyTexture(point_icon);
 };

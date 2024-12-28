@@ -3,6 +3,11 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 
+#define BOBERSPEED 330
+#define BOBERSIZE 110
+#define WEAPONSIZE 50
+#define FIRECOOLDOWN 2000
+
 enum PlayerSetting {
     HUMAN,
     BOT,
@@ -23,13 +28,14 @@ enum Movement {
 };
 
 typedef struct {
-    int player_id;
     enum PlayerSetting setting;
     bool alive;
     int points;
     enum Weapon active_weapon;
     int ammo;
-    SDL_Rect rect;
+    Uint32 lastFired;
+    SDL_Rect rect; 
+    double angle;
     bool keysPressed[5];
     enum Movement lastKeyPressed;
 } Bober;
