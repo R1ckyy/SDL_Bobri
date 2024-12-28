@@ -88,26 +88,23 @@ void bulletFired(Bober firing_bober, int bober_id) {
         Bullet bullet2 = createBullet(firing_bober);
         bullet2.x_vel = firing_bober.angle == 0 ? 0.25 :
                         firing_bober.angle == 90 ? 0.5 :
-                        firing_bober.angle == 180 ? -0.25 :
+                        firing_bober.angle == 180 ? -0.10 :
                         firing_bober.angle == 270 ? -0.5 : 0;
         bullet2.y_vel = firing_bober.angle == 0 ? -0.5 :
                         firing_bober.angle == 90 ? 0.25 :
                         firing_bober.angle == 180 ? 0.5 :
-                        firing_bober.angle == 270 ? -0.25 : 0;        
+                        firing_bober.angle == 270 ? -0.10 : 0;        
         bullet2.id_bober_owner = bober_id;
         Bullet bullet3 = createBullet(firing_bober);
-        bullet3.x_vel = firing_bober.angle == 0 ? -0.25 :
+        bullet3.x_vel = firing_bober.angle == 0 ? -0.10 :
                         firing_bober.angle == 90 ? 0.5 :
                         firing_bober.angle == 180 ? 0.25 :
                         firing_bober.angle == 270 ? -0.5 : 0;
         bullet3.y_vel = firing_bober.angle == 0 ? -0.5 :
-                        firing_bober.angle == 90 ? -0.25 :
+                        firing_bober.angle == 90 ? -0.10 :
                         firing_bober.angle == 180 ? 0.5 :
                         firing_bober.angle == 270 ? 0.25 : 0;
         bullet3.id_bober_owner = bober_id;
-
-        printf("1 %.2f,%.2f\n",bullet2.x_vel,bullet2.y_vel);
-        printf("2 %.2f,%.2f\n",bullet3.x_vel,bullet3.y_vel);
 
         bullets[bulletc-1] = bullet1;
         bullets[bulletc-2] = bullet2;
