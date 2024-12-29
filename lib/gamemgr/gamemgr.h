@@ -7,7 +7,8 @@ enum Screens {
     MENU,
     SETTINGS,
     LEADERBOARD,
-    GAME
+    GAME,
+    ENDGAME
 };
 
 enum MousePos {

@@ -2,6 +2,7 @@
 
 #include <stdbool.h>
 #include <SDL2/SDL.h>
+#include "../screens/endgame/endgame.h"
 
 #define BOBERSPEED 330
 #define BOBERSIZE 110
@@ -44,6 +45,8 @@ typedef struct {
 
 void initPlayerManager();
 
+void prepToStart();
+
 void keyPressed(SDL_KeyCode key);
 void keyUnpressed(SDL_KeyCode key);
 
@@ -56,6 +59,10 @@ int PlayerRectCollisionExc(SDL_Rect rect, int excluding_bober);
 
 void PlayerShot(int id, int owner_bober_id);
 void respawnPlayers();
+
+void playerHitUpgrade(int id, enum Weapon weapon);
+
+Score getPlayerScores();
 
 void renderPlayers();
 

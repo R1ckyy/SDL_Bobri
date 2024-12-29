@@ -5,6 +5,7 @@
 #include "../screens/settings/settings.h"
 #include "../screens/leaderboard/leaderboard.h"
 #include "../screens/ingame/ingame.h"
+#include "../screens/endgame/endgame.h"
 #include "../buttonmgr/buttonmgr.h"
 
 #include "gamemgr.h"
@@ -71,6 +72,9 @@ void setActiveScreen(enum Screens screen) {
     case GAME:
         kill_Ingame();
         break;
+    case ENDGAME:
+        kill_EndGame();
+        break;
     default:
         break;
     }
@@ -87,6 +91,9 @@ void setActiveScreen(enum Screens screen) {
         break;
     case GAME:
         init_Ingame();
+        break;
+    case ENDGAME:
+        init_EndGame();
         break;
     default:
         break;
@@ -112,6 +119,9 @@ void renderActiveScreen() {
         render_Ingame();
         logic_Ingame();
         break;
+    case ENDGAME:
+        render_EndGame();
+        break;
     default:
         break;
     }
@@ -130,6 +140,9 @@ void killGameManager() {
         break;
     case GAME:
         kill_Ingame();
+        break;
+    case ENDGAME:
+        kill_EndGame();
         break;
     default:
         break;

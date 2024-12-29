@@ -72,7 +72,6 @@ void bulletFired(Bober firing_bober, int bober_id) {
 
         bullets[bulletc-1] = bullet;
     } else {
-        printf("prujem\n");
         if(bulletc == 0) {
             bulletc+=3;
             bullets = malloc(sizeof(Bullet) * bulletc);
@@ -152,7 +151,10 @@ void bulletLogic() {
         }
     }
 
-    free(bullets);
+    if(bullets != NULL) {
+        free(bullets);
+        bullets = NULL;
+    }
     bullets = new_bullets;
     bulletc = new_bulletc;
 };
@@ -167,6 +169,7 @@ void killBulletManager() {
     SDL_DestroyTexture(bullet_texture);
     if(bulletc > 0 || bullets != NULL) {
         free(bullets);
+        bullets = NULL;
         bulletc = 0;
     }
 };

@@ -7,6 +7,7 @@
 #include "../../playermgr/playermgr.h"
 #include "../../wallsmgr/wallsmgr.h"
 #include "../../bulletsmgr/bulletsmgr.h"
+#include "../../upgrademgr/upgrademgr.h"
 
 #include "ingame.h"
 
@@ -30,10 +31,18 @@ void init_Ingame() {
 
     mainfont = TTF_OpenFont("fonts/Galindo.ttf", 72);
     numberfont = TTF_OpenFont("fonts/Monomaniac.ttf", 144);
+
+    prepToStart();
+
+    initUpgradesManager();
+
+    initBulletManager();
 };
 
 void render_Ingame() {
     renderImage(background_texture, 0, 0, 1400, 800, 0, 0);
+
+    renderUpgrades();
 
     renderPlayers();
 
@@ -50,7 +59,7 @@ void render_Ingame() {
         createText(numberfont, white, buf, 900, 300, 120, 170);
     }else{
         char buf[3];
-        sprintf(buf, "%2d", gameEnd/1000 - SDL_GetTicks()/1000);
+        sprintf(buf, "%02d", gameEnd/1000 - SDL_GetTicks()/1000);
         createText(numberfont, white, buf, 650, 0, 100, 100);
     }
 
@@ -63,15 +72,26 @@ void logic_Ingame() {
     }
 
     if(gameStarted) {
+        respawnUpgrades();
+        upgradesLogic();
         respawnPlayers();
         movePlayers();
         bulletLogic();
     }
+
+    if(gameEnd <= SDL_GetTicks() && gameStarted) {
+        gameStarted = false; 
+        setActiveScreen(ENDGAME);
+    }
 };
 
 void kill_Ingame() {
+    killBulletManager();
+
     SDL_DestroyTexture(background_texture);
 
     TTF_CloseFont(mainfont);
     TTF_CloseFont(numberfont);
+
+    killUpgradesManager();
 };

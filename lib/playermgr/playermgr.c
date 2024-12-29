@@ -21,6 +21,7 @@ SDL_Texture *bobersTextures[3];
 SDL_Texture *weaponTextures[3];
 
 static SDL_Texture *point_icon;
+static SDL_Texture *ammo_icon;
 
 static TTF_Font *mainfont;
 
@@ -32,7 +33,6 @@ static SDL_KeyCode keyboard_layout [3][5] = {
 };
 
 void initPlayerManager() {
-    initBulletManager();
 
     bobers = malloc(sizeof(Bober) * 3);
     if(!bobers && isDebug()) {
@@ -50,30 +50,37 @@ void initPlayerManager() {
     for (int i = 0; i < 3; i++) {
         Bober bobr;
         bobr.setting = HUMAN;
-        bobr.alive = true;
-        bobr.points = 0;
-        bobr.active_weapon = i;
-        bobr.ammo = 2;
         bobr.rect.x = 0;
         bobr.rect.y = 0;
         bobr.rect.w = BOBERSIZE;
         bobr.rect.h = BOBERSIZE;
-        bobr.angle = 0;
-        bobr.lastFired = SDL_GetTicks();
-        bobr.lastDied = SDL_GetTicks();
         for (int j = 0; j < 5; j++) {
             bobr.keysPressed[j] = false;
         }
         bobr.lastKeyPressed = DOWN;
 
         bobers[i] = bobr;
-
-        randomPos(i);
     }
 
     mainfont = TTF_OpenFont("fonts/Roboto.ttf", 72);
 
     point_icon = IMG_LoadTexture(getRenderer(), "images/points.png");
+    ammo_icon = IMG_LoadTexture(getRenderer(), "images/acorn.png");
+};
+
+void prepToStart() {
+    for (int i = 0; i < 3; i++) {
+        bobers[i].alive = true;
+        bobers[i].points = 0;
+        bobers[i].active_weapon = VETEV;
+        bobers[i].ammo = -1;
+        bobers[i].angle = 0;
+        bobers[i].lastFired = SDL_GetTicks();
+        bobers[i].lastDied = SDL_GetTicks();
+
+        randomPos(i);
+    }
+    
 };
 
 void keyPressed(SDL_KeyCode key) {
@@ -178,8 +185,7 @@ int PlayerRectCollisionExc(SDL_Rect rect, int excluding_bober) {
 void PlayerShot(int id, int owner_bober_id) {
     bobers[id].lastDied = SDL_GetTicks();
     bobers[id].alive = false;
-    bobers[id].points--;
-    bobers[owner_bober_id].points+=3;
+    bobers[owner_bober_id].points+=1;
     bobers[id].angle = rand() % 360;
 };
 
@@ -193,6 +199,45 @@ void respawnPlayers() {
             bobers[i].alive = true;
         }   
     }
+};
+
+void playerHitUpgrade(int id, enum Weapon weapon) {
+    bobers[id].active_weapon = weapon;
+    bobers[id].ammo = 2;
+    bobers[id].points+=1;
+};
+
+// -1 no wiinoer (bot won)
+// -2 tie
+Score getPlayerScores() {
+    Score bestScore;
+    bestScore.bober_id = -1;
+    bestScore.score = 0;
+
+    int bestScoreCount = 0;
+    int playerCount = 0;
+
+    for (int i = 0; i < 3; i++) {
+        if (bobers[i].setting == BOT || bobers[i].setting == INACTIVE) continue;
+
+        playerCount++;
+
+        if (bobers[i].points > bestScore.score) {
+            bestScore.score = bobers[i].points;
+            bestScore.bober_id = i;
+            bestScoreCount = 1;
+        } else if (bobers[i].points == bestScore.score) {
+            bestScoreCount++;
+        }
+    }
+
+    if (playerCount > 1 && bestScoreCount > 1) {
+        bestScore.bober_id = -2;
+    } else if (playerCount == 0 || bestScoreCount == 0) {
+        bestScore.bober_id = -1;
+    }
+
+    return bestScore;
 };
 
 void renderPlayers() {
@@ -236,18 +281,24 @@ void renderPlayersHud() {
     for (int i = 0; i < 3; i++) {
         if(!bobers[i].alive) continue;
         char buf[5];
-        sprintf(buf, "%2d", bobers[i].points);
+        sprintf(buf, "%02d", bobers[i].points);
         SDL_SetRenderDrawColor(getRenderer(), 0, 0, 0, 0);
         createText(mainfont, white, buf, bobers[i].rect.x-10, bobers[i].rect.y, 25, 25);
         renderImage(point_icon, bobers[i].rect.x-35, bobers[i].rect.y, 25, 25, 0, SDL_FLIP_NONE);
+        char buf2[5];
+        renderImage(ammo_icon, bobers[i].rect.x+BOBERSIZE-20, bobers[i].rect.y, 25, 25, 0, SDL_FLIP_NONE);
+        if(bobers[i].ammo == -1) sprintf(buf2, "Inf");
+        else sprintf(buf2, "%d", bobers[i].ammo+1);
+        createText(mainfont, white, buf2, bobers[i].rect.x+BOBERSIZE+5, bobers[i].rect.y, 25, 25);
     }
     
 };
 
 void killPlayerManager() {
-    killBulletManager();
-    
-    free(bobers);
+    if(bobers != NULL){
+        free(bobers);
+        bobers = NULL;
+    }
 
     for (int i = 0; i < 3; i++) {
         SDL_DestroyTexture(bobersTextures[i]);
@@ -257,4 +308,5 @@ void killPlayerManager() {
     TTF_CloseFont(mainfont);
 
     SDL_DestroyTexture(point_icon);
+    SDL_DestroyTexture(ammo_icon);
 };
