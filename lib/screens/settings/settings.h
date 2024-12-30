@@ -2,7 +2,10 @@
 
 #include <SDL2/SDL.h>
 
-void btnAction_ReturnToMenu();
+void btnAction_SReturnToMenu();
+void btnAction_SPlayer1();
+void btnAction_SPlayer2();
+void btnAction_SPlayer3();
 
 void init_Settings();
 

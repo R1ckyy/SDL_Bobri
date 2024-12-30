@@ -4,6 +4,7 @@
 #include "../../../utils/textrender/textrender.h"
 #include "../../buttonmgr/buttonmgr.h"
 #include "../../gamemgr/gamemgr.h"
+#include "../../playermgr/playermgr.h"
 #include "../../../utils/imgrender/imgrender.h"
 #include "../../../utils/colors/colors.h"
 
@@ -15,7 +16,11 @@ static TTF_Font *mainfont;
 static SDL_Texture *background_texture;
 
 void btnAction_StartGame() {
-    setActiveScreen(GAME);
+    int totalPlayers = 0;
+    for (int i = 0; i < 3; i++) {
+        if(getPlayerSetting(i) == HUMAN || getPlayerSetting(i) == BOT) totalPlayers++;
+    }
+    if(totalPlayers >= 2) setActiveScreen(GAME);
 };
 
 void btnAction_Settings() {
@@ -37,7 +42,13 @@ void init_MainMenu() {
 
     background_texture = IMG_LoadTexture(getRenderer(),"images/background_menu.png");
 
-    createButton("start", mainfont, "Start Game", 550, 300, 300, 75, grey, high, btnAction_StartGame);
+    int totalPlayers = 0;
+    for (int i = 0; i < 3; i++) {
+        if(getPlayerSetting(i) == HUMAN || getPlayerSetting(i) == BOT) totalPlayers++;
+    }
+    if(totalPlayers >= 2) createButton("start", mainfont, "Start Game", 550, 300, 300, 75, grey, high, btnAction_StartGame);
+    else createButton("start", mainfont, "Start Game", 550, 300, 300, 75, darkgrey, darkgrey, btnAction_StartGame);
+    
     createButton("settings", mainfont, "Settings", 575, 400, 250, 75, grey, high, btnAction_Settings);
     createButton("leaderboard", mainfont, "Leaderboard", 550, 500, 300, 75, grey, high, btnAction_LeaderBoard);
     createButton("quit", mainfont, "Quit", 625, 600, 150, 75, grey, red, btnAction_Quit);

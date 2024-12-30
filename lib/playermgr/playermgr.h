@@ -45,6 +45,9 @@ typedef struct {
 
 void initPlayerManager();
 
+void setPlayerSetting(int id, enum PlayerSetting setting);
+enum PlayerSetting getPlayerSetting(int id);
+
 void prepToStart();
 
 void keyPressed(SDL_KeyCode key);

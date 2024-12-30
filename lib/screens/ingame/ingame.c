@@ -40,6 +40,8 @@ void init_Ingame() {
 };
 
 void render_Ingame() {
+    SDL_SetRenderDrawColor(getRenderer(), 0,0,0,0);
+
     renderImage(background_texture, 0, 0, 1400, 800, 0, 0);
 
     renderUpgrades();

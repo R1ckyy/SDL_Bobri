@@ -5,6 +5,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <time.h>
 #include "../gamemgr/gamemgr.h"
+#include "../screens/endgame/endgame.h"
 #include "../../utils/imgrender/imgrender.h"
 #include "../../utils/textrender/textrender.h"
 #include "../../utils/colors/colors.h"
@@ -66,6 +67,14 @@ void initPlayerManager() {
 
     point_icon = IMG_LoadTexture(getRenderer(), "images/points.png");
     ammo_icon = IMG_LoadTexture(getRenderer(), "images/acorn.png");
+};
+
+void setPlayerSetting(int id, enum PlayerSetting setting) {
+    bobers[id].setting = setting;
+};
+
+enum PlayerSetting getPlayerSetting(int id) {
+    return bobers[id].setting;
 };
 
 void prepToStart() {
@@ -166,6 +175,7 @@ void movePlayers() {
 int PlayerRectCollision(SDL_Rect rect) {
     SDL_Rect result;
     for (int i = 0; i < 3; i++) {
+        if(bobers[i].setting == INACTIVE) continue;
         if(!bobers[i].alive) continue;
         if(SDL_IntersectRect(&bobers[i].rect, &rect, &result) == SDL_TRUE) return i;
     }
@@ -211,7 +221,7 @@ void playerHitUpgrade(int id, enum Weapon weapon) {
 // -2 tie
 Score getPlayerScores() {
     Score bestScore;
-    bestScore.bober_id = -1;
+    bestScore.boberid = -1;
     bestScore.score = 0;
 
     int bestScoreCount = 0;
@@ -224,7 +234,7 @@ Score getPlayerScores() {
 
         if (bobers[i].points > bestScore.score) {
             bestScore.score = bobers[i].points;
-            bestScore.bober_id = i;
+            bestScore.boberid = i;
             bestScoreCount = 1;
         } else if (bobers[i].points == bestScore.score) {
             bestScoreCount++;
@@ -232,13 +242,14 @@ Score getPlayerScores() {
     }
 
     if (playerCount > 1 && bestScoreCount > 1) {
-        bestScore.bober_id = -2;
+        bestScore.boberid = -2; // Tie
     } else if (playerCount == 0 || bestScoreCount == 0) {
-        bestScore.bober_id = -1;
+        bestScore.boberid = -1; // No winner
     }
 
     return bestScore;
-};
+}
+
 
 void renderPlayers() {
     for (int i = 0; i < 3; i++) {
@@ -279,6 +290,7 @@ void renderPlayers() {
 
 void renderPlayersHud() {
     for (int i = 0; i < 3; i++) {
+        if(bobers[i].setting == INACTIVE) continue;
         if(!bobers[i].alive) continue;
         char buf[5];
         sprintf(buf, "%02d", bobers[i].points);

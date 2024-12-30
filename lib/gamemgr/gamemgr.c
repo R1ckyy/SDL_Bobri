@@ -121,6 +121,7 @@ void renderActiveScreen() {
         break;
     case ENDGAME:
         render_EndGame();
+        logic_EndGame();
         break;
     default:
         break;

@@ -82,6 +82,7 @@ void buttonCheck() {
 
         if((getMousePos(X) >= btn.x && getMousePos(X) <= btn.x+btn.w) && (getMousePos(Y) >= btn.y && getMousePos(Y) <= btn.y+btn.h)) {
         btn.action();
+        break;
         }
     }
     

@@ -38,6 +38,7 @@ int main(int argc, char *argv[]) {
     initRenderer(renderer);
 
     initButtonMgr();
+    initPlayerManager();
 
     if(argc > 1){
         if(strcmp(argv[1], "-debug") == 0) initGameManager(true);
@@ -45,7 +46,6 @@ int main(int argc, char *argv[]) {
     }else initGameManager(DEBUG);
         
     initWallsManager();
-    initPlayerManager();
 
     // End load order
 
@@ -57,6 +57,7 @@ int main(int argc, char *argv[]) {
     // --- ---
 
     Uint64 last = SDL_GetPerformanceCounter();
+    bool pressed = false;
 
     while (isRunning()) {
         Uint64 now = SDL_GetPerformanceCounter();
@@ -73,20 +74,24 @@ int main(int argc, char *argv[]) {
                 updateMousePos();
             }
             if (event.type == SDL_MOUSEBUTTONDOWN) {
-                if(event.button.button == SDL_BUTTON_LEFT) {
+                if(event.button.button == SDL_BUTTON_LEFT && pressed == false) {
+                    pressed = true;
                     if(isDebug()) printf("Left mouse button pressed at [x:%d,y:%d]\n",getMousePos(X), getMousePos(Y));
                     buttonCheck();
                 }
             }
+            if (event.type == SDL_MOUSEBUTTONUP) {
+                if(event.button.button == SDL_BUTTON_LEFT && pressed == true) pressed = false;   
+            }
             if (event.type == SDL_KEYDOWN) {
                 SDL_Keycode key = event.key.keysym.sym;
                 keyPressed(key);
+                endGame_keyPressed(key);
             }
             if (event.type == SDL_KEYUP) {
                 SDL_Keycode key = event.key.keysym.sym;
                 keyUnpressed(key);
             }
-
         }
 
         if(isDebug()) printf("Mouse: [x:%d,y:%d], ActiveScreen: %d, deltaTime: %.3f\n", getMousePos(X), getMousePos(Y), getActiveScreen(), getDeltaTime());
