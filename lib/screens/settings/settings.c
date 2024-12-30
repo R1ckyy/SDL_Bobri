@@ -68,6 +68,9 @@ void render_Settings() {
         sprintf(buf, "%s", getPlayerSetting(i) == HUMAN ? "HUMAN" : getPlayerSetting(i) == BOT ? "BOT" : "NONE");
         createText(mainfont, white, buf, 900, 200+i*150, 200, 100);  
     }    
+    createText(mainfont, white, "(W,A,S,D | SPACE)", 570, 310, 200, 25);
+    createText(mainfont, white, "(I,J,K,L |  N  )", 570, 460, 200, 25);
+    createText(mainfont, white, "(UP,LEFT,DOWN,RIGHT | RSHIFT)", 550, 610, 240, 25);
     
     renderButtons();
 };
