@@ -297,7 +297,7 @@ void renderPlayersHud() {
         SDL_SetRenderDrawColor(getRenderer(), 0, 0, 0, 0);
         createText(mainfont, white, buf, bobers[i].rect.x-10, bobers[i].rect.y, 25, 25);
         renderImage(point_icon, bobers[i].rect.x-35, bobers[i].rect.y, 25, 25, 0, SDL_FLIP_NONE);
-        char buf2[5];
+        char buf2[12];
         renderImage(ammo_icon, bobers[i].rect.x+BOBERSIZE-20, bobers[i].rect.y, 25, 25, 0, SDL_FLIP_NONE);
         if(bobers[i].ammo == -1) sprintf(buf2, "Inf");
         else sprintf(buf2, "%d", bobers[i].ammo+1);

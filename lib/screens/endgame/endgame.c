@@ -7,6 +7,7 @@
 #include "../../../utils/textrender/textrender.h"
 #include "../../../utils/colors/colors.h"
 #include "../../../utils/imgrender/imgrender.h"
+#include "../../../utils/fileleaderboard/fileleaderboard.h"
 #include "../../buttonmgr/buttonmgr.h"
 
 #include "endgame.h"
@@ -31,6 +32,8 @@ void btnAction_EReturnToMenu() {
 };
 
 void btnAction_ESaveData() {
+    writeIntoFile(name, bestScore.score);
+
     setActiveScreen(MENU);
 }
 
@@ -75,7 +78,7 @@ void render_EndGame() {
     } else {
         createButton("end_savedata", mainfont, "Save", 915, 450, 175, 75, grey, high, btnAction_ESaveData);
 
-        char buf[35];
+        char buf[55];
         sprintf(buf, "Player %d Won with %d points!", bestScore.boberid+1, bestScore.score);
         renderImage(bobers[bestScore.boberid], 625, 190, 150, 150, angle, SDL_FLIP_NONE);
         createText(mainfont, white, buf, 300, 325, 800, 75);
