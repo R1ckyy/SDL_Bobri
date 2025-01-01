@@ -8,7 +8,7 @@
 #define BOBERSIZE 110
 #define WEAPONSIZE 50
 #define FIRECOOLDOWN 2000
-#define RESPAWNTIME 5000
+#define RESPAWNTIME 3000
 
 enum PlayerSetting {
     HUMAN,

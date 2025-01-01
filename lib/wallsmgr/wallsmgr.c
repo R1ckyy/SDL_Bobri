@@ -7,12 +7,14 @@
 
 #include "wallsmgr.h"
 
-#define WALLCOUNT 1
+#define WALLCOUNT 3
 
 static SDL_Texture *wall_texture;
 
 static int wallPos[WALLCOUNT][4] = {
-    {700,400,100,400}
+    {1000,300,50,300},
+    {400,300,200,50},
+    {550,57+0,50,100}
 };
 static SDL_Rect *walls;
 
@@ -39,6 +41,7 @@ void initWallsManager() {
 void renderWalls() {
     for (int i = 0; i < WALLCOUNT; i++) {
         renderImageOnRect(wall_texture, walls[i], 0, SDL_FLIP_NONE);
+        SDL_RenderDrawRect(getRenderer(), &walls[i]);
     }
 };
 

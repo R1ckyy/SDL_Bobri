@@ -27,7 +27,7 @@ void init_Ingame() {
     gameStart = SDL_GetTicks() + STARTCOUNTDOWN;
     gameEnd = SDL_GetTicks() + STARTCOUNTDOWN + GAMETIME;
 
-    background_texture = IMG_LoadTexture(getRenderer(),"images/game_background.webp");
+    background_texture = IMG_LoadTexture(getRenderer(),"images/game_background.jpg");
 
     mainfont = TTF_OpenFont("fonts/Galindo.ttf", 72);
     numberfont = TTF_OpenFont("fonts/Monomaniac.ttf", 144);

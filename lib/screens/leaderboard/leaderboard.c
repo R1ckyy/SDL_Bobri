@@ -14,7 +14,7 @@ static TTF_Font *mainfont;
 
 static SDL_Texture *background_texture;
 
-ReadData leaderboard;
+static ReadData leaderboard;
 
 void btnAction_LReturnToMenu() {
     setActiveScreen(MENU);
@@ -72,6 +72,8 @@ void render_Leaderboard() {
 void kill_Leaderboard() {
     TTF_CloseFont(titlefont);
     TTF_CloseFont(mainfont);
+
+    if(leaderboard.entries != 0) free(leaderboard.data);
 
     SDL_DestroyTexture(background_texture);
 };

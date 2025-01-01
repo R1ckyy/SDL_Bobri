@@ -66,7 +66,7 @@ void initPlayerManager() {
     mainfont = TTF_OpenFont("fonts/Roboto.ttf", 72);
 
     point_icon = IMG_LoadTexture(getRenderer(), "images/points.png");
-    ammo_icon = IMG_LoadTexture(getRenderer(), "images/acorn.png");
+    ammo_icon = IMG_LoadTexture(getRenderer(), "images/ammo.png");
 };
 
 void setPlayerSetting(int id, enum PlayerSetting setting) {
