@@ -130,10 +130,10 @@ void randomPos(int id) {
 
 void moveAIkeySim(int id, enum Movement where, int nearestDist) {
     for (int i = 0; i < 4; i++) {
-        if(i == where && nearestDist > 200) continue;
+        if(i == (int)where && nearestDist > 250) continue;
         bobers[id].keysPressed[i] = false;
     }
-    bobers[id].keysPressed[where] = nearestDist > 200 ? true : false;
+    bobers[id].keysPressed[where] = nearestDist > 250 ? true : false;
     bobers[id].lastKeyPressed = where;
 };
 
@@ -157,7 +157,7 @@ void moveAI() {
 
         if(nearest_index == -1) continue;
         
-        if (abs(bobers[nearest_index].rect.x - bobers[i].rect.x) <= AISHOOTTOLERANCE || abs(bobers[nearest_index].rect.y - bobers[i].rect.y) <= AISHOOTTOLERANCE && bobers[i].alive) {
+        if ((abs(bobers[nearest_index].rect.x - bobers[i].rect.x) <= AISHOOTTOLERANCE || abs(bobers[nearest_index].rect.y - bobers[i].rect.y) <= AISHOOTTOLERANCE) && bobers[i].alive) {
             bobers[i].keysPressed[4] = true;
         } else {
             bobers[i].keysPressed[4] = false;
