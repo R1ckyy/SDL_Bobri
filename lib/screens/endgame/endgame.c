@@ -60,7 +60,7 @@ void init_EndGame() {
     for (int i = 0; i < INPUTLENGTH-1; i++) {
         name[i] = ' ';
     }
-    name[INPUTLENGTH] = '\0';
+    name[INPUTLENGTH-1] = '\0';
 
     createButton("end_returntomain", mainfont, "Return to menu", 50, 700, 300, 50, grey, white, btnAction_EReturnToMenu);
 };

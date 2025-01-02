@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 
 #define STARTCOUNTDOWN 5000
-#define GAMETIME 60000
+#define GAMETIME 10000
 
 void init_Ingame();
 
