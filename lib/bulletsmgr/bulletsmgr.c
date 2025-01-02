@@ -121,6 +121,7 @@ void bulletLogic() {
         if(bullets[i].rect.x >= 1400 || bullets[i].rect.x+BULLETSIZE <= 0) bullets[i].remove = true; 
         if(bullets[i].rect.y >= 800 || bullets[i].rect.y+BULLETSIZE <= 0) bullets[i].remove = true;
         if(WallRectCollision(bullets[i].rect)) bullets[i].remove = true;
+        if(bullets[i].rect.x == 0 & bullets[i].rect.y == 0) bullets[i].remove = true;
 
         int hit = PlayerRectCollision(bullets[i].rect);
         if(hit != -1) {

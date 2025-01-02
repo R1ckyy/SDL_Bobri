@@ -139,12 +139,12 @@ void moveAIkeySim(int id, enum Movement where, int nearestDist) {
 
 void moveAI() {
     for (int i = 0; i < 3; i++) {
-        if(bobers[i].setting != BOT) continue;
+        if(bobers[i].setting != BOT || !bobers[i].alive) continue;
         //find nearest player
         int nearest_index = -1;
         int nearest_distance = 12345;
         for (int j = 0; j < 3; j++) {
-            if(j == i || bobers[j].setting == INACTIVE || bobers[j].alive) continue;
+            if(j == i || bobers[j].setting == INACTIVE || !bobers[j].alive) continue;
             int distance = 0;
             distance += bobers[i].rect.x > bobers[j].rect.x ? bobers[i].rect.x - bobers[j].rect.x : bobers[j].rect.x - bobers[i].rect.x;
             distance += bobers[i].rect.y > bobers[j].rect.y ? bobers[i].rect.y - bobers[j].rect.y : bobers[j].rect.y - bobers[i].rect.y;
@@ -157,12 +157,10 @@ void moveAI() {
 
         if(nearest_index == -1) continue;
         
-        if (abs(bobers[nearest_index].rect.x - bobers[i].rect.x) <= AISHOOTTOLERANCE || abs(bobers[nearest_index].rect.y - bobers[i].rect.y) <= AISHOOTTOLERANCE) {
+        if (abs(bobers[nearest_index].rect.x - bobers[i].rect.x) <= AISHOOTTOLERANCE || abs(bobers[nearest_index].rect.y - bobers[i].rect.y) <= AISHOOTTOLERANCE && bobers[i].alive) {
             bobers[i].keysPressed[4] = true;
-            printf("true\n");
         } else {
             bobers[i].keysPressed[4] = false;
-            printf("false\n");
         }
         
         if(bobers[nearest_index].rect.y < bobers[i].rect.y - AIMOVETOLERANCE) {
@@ -291,14 +289,15 @@ Score getPlayerScores() {
     }
 
     if (playerCount > 1 && bestScoreCount > 1) {
-        bestScore.boberid = -2; // Tie
+        bestScore.boberid = -2;
     } else if (playerCount == 0 || bestScoreCount == 0) {
-        bestScore.boberid = -1; // No winner
+        bestScore.boberid = -1;
+    } else if (bestScore.boberid != -2 && bobers[bestScore.boberid].setting == BOT) {
+        bestScore.boberid = -1;
     }
 
     return bestScore;
 }
-
 
 void renderPlayers() {
     for (int i = 0; i < 3; i++) {
