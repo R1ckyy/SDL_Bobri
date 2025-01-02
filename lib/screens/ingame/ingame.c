@@ -78,6 +78,7 @@ void logic_Ingame() {
         upgradesLogic();
         respawnPlayers();
         movePlayers();
+        moveAI();
         bulletLogic();
     }
 

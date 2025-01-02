@@ -128,6 +128,55 @@ void randomPos(int id) {
     }while(WallRectCollision(bobers[id].rect) || PlayerRectCollisionExc(bobers[id].rect, id) != -1);
 };
 
+void moveAIkeySim(int id, enum Movement where, int nearestDist) {
+    for (int i = 0; i < 4; i++) {
+        if(i == where && nearestDist > 200) continue;
+        bobers[id].keysPressed[i] = false;
+    }
+    bobers[id].keysPressed[where] = nearestDist > 200 ? true : false;
+    bobers[id].lastKeyPressed = where;
+};
+
+void moveAI() {
+    for (int i = 0; i < 3; i++) {
+        if(bobers[i].setting != BOT) continue;
+        //find nearest player
+        int nearest_index = -1;
+        int nearest_distance = 12345;
+        for (int j = 0; j < 3; j++) {
+            if(j == i || bobers[j].setting == INACTIVE || bobers[j].alive) continue;
+            int distance = 0;
+            distance += bobers[i].rect.x > bobers[j].rect.x ? bobers[i].rect.x - bobers[j].rect.x : bobers[j].rect.x - bobers[i].rect.x;
+            distance += bobers[i].rect.y > bobers[j].rect.y ? bobers[i].rect.y - bobers[j].rect.y : bobers[j].rect.y - bobers[i].rect.y;
+
+            if(distance < nearest_distance) {
+                nearest_index = j;
+                nearest_distance = distance;
+            }
+        }
+
+        if(nearest_index == -1) continue;
+        
+        if (abs(bobers[nearest_index].rect.x - bobers[i].rect.x) <= AISHOOTTOLERANCE || abs(bobers[nearest_index].rect.y - bobers[i].rect.y) <= AISHOOTTOLERANCE) {
+            bobers[i].keysPressed[4] = true;
+            printf("true\n");
+        } else {
+            bobers[i].keysPressed[4] = false;
+            printf("false\n");
+        }
+        
+        if(bobers[nearest_index].rect.y < bobers[i].rect.y - AIMOVETOLERANCE) {
+            moveAIkeySim(i, UP, nearest_distance);
+        }else if(bobers[nearest_index].rect.y > bobers[i].rect.y + AIMOVETOLERANCE) {
+            moveAIkeySim(i, DOWN, nearest_distance);
+        }else if(bobers[nearest_index].rect.x < bobers[i].rect.x - AIMOVETOLERANCE) {
+            moveAIkeySim(i, LEFT, nearest_distance);
+        }else if(bobers[nearest_index].rect.x > bobers[i].rect.x + AIMOVETOLERANCE) {
+            moveAIkeySim(i, RIGHT, nearest_distance);
+        }
+    }
+};
+
 void movePlayers() {
     for (int i = 0; i < 3; i++) {
         if(bobers[i].setting == INACTIVE) continue;

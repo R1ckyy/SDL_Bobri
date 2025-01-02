@@ -9,6 +9,8 @@
 #define WEAPONSIZE 50
 #define FIRECOOLDOWN 2000
 #define RESPAWNTIME 3000
+#define AISHOOTTOLERANCE 50
+#define AIMOVETOLERANCE 30
 
 enum PlayerSetting {
     HUMAN,
@@ -55,6 +57,8 @@ void keyUnpressed(SDL_KeyCode key);
 
 void randomPos(int id);
 
+void moveAIkeySim(int id, enum Movement where, int nearestDist);
+void moveAI();
 void movePlayers();
 
 int PlayerRectCollision(SDL_Rect rect);
